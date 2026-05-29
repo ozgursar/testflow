@@ -35,7 +35,7 @@ class TestFlow_Admin {
 			'edit_posts',
 			self::SLUG_BASE,
 			array( $this, 'render_overview' ),
-			'dashicons-groups',
+			'dashicons-editor-paste-text',
 			81
 		);
 
