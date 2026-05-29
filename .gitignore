@@ -1,0 +1,40 @@
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Composer
+vendor/
+
+# Environment
+.env
+.env.*
+
+# Build artefacts
+/build/
+/dist/
+*.min.js
+*.min.css
+
+# Logs
+*.log
