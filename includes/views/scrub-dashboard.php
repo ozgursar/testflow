@@ -50,7 +50,13 @@ $closing_messages = array(
 <div class="wrap tf-wrap">
 
 	<div class="tf-header">
-		<h1><?php esc_html_e( 'Patch Testing Scrub', 'testflow' ); ?></h1>
+		<div class="tf-header-title">
+			<h1><?php esc_html_e( 'Patch Testing Scrub', 'testflow' ); ?></h1>
+			<div class="tf-session-type" role="group" aria-label="<?php esc_attr_e( 'Session type', 'testflow' ); ?>">
+				<button class="tf-session-type-btn is-active" data-type="core"><?php esc_html_e( 'Core', 'testflow' ); ?></button>
+				<button class="tf-session-type-btn" data-type="gutenberg"><?php esc_html_e( 'Gutenberg', 'testflow' ); ?></button>
+			</div>
+		</div>
 		<div class="tf-timer-controls">
 			<button id="tf-timer-reset" class="button"><?php esc_html_e( 'Reset', 'testflow' ); ?></button>
 			<button id="tf-edit-limit-btn" class="button"><?php esc_html_e( 'Edit', 'testflow' ); ?></button>
@@ -109,11 +115,15 @@ $closing_messages = array(
 			<div class="tf-panel-section">
 				<div class="tf-section-label"><?php esc_html_e( 'Assign Ticket', 'testflow' ); ?></div>
 				<div class="tf-assign-inputs">
-					<input type="text" id="tf-assign-username" class="tf-text-input" placeholder="<?php esc_attr_e( '@username', 'testflow' ); ?>">
-					<input type="text" id="tf-assign-ticket" class="tf-text-input" placeholder="<?php esc_attr_e( '#ticket', 'testflow' ); ?>">
+					<select id="tf-assign-username" class="tf-text-input">
+						<option value=""><?php esc_html_e( '— participant —', 'testflow' ); ?></option>
+					</select>
+					<select id="tf-assign-ticket" class="tf-text-input">
+						<option value=""><?php esc_html_e( '— ticket / issue —', 'testflow' ); ?></option>
+					</select>
 				</div>
 				<div id="tf-assign-preview" class="tf-preview tf-preview--muted">
-					<?php esc_html_e( 'Enter username and ticket number above', 'testflow' ); ?>
+					<?php esc_html_e( 'Select participant and ticket above', 'testflow' ); ?>
 				</div>
 				<div class="tf-assign-btns">
 					<div class="tf-assign-btns-row">
@@ -153,15 +163,40 @@ $closing_messages = array(
 		</aside>
 
 		<main class="tf-tracker">
+
+			<div class="tf-pool-setup">
+				<div class="tf-pool-col">
+					<label class="tf-pool-label" for="tf-participant-pool">
+						<?php esc_html_e( 'Participants (one per line)', 'testflow' ); ?>
+					</label>
+					<textarea
+						id="tf-participant-pool"
+						class="tf-pool-textarea"
+						rows="8"
+						wrap="off"
+						placeholder="<?php esc_attr_e( "username1\nusername2\nusername3", 'testflow' ); ?>"
+					></textarea>
+				</div>
+				<div class="tf-pool-col">
+					<label class="tf-pool-label" for="tf-ticket-pool">
+						<?php esc_html_e( 'Tickets / Issues (one URL per line)', 'testflow' ); ?>
+					</label>
+					<textarea
+						id="tf-ticket-pool"
+						class="tf-pool-textarea"
+						rows="8"
+						wrap="off"
+						placeholder="<?php esc_attr_e( "https://core.trac.wordpress.org/ticket/65403\nhttps://github.com/WordPress/gutenberg/issues/12345", 'testflow' ); ?>"
+					></textarea>
+				</div>
+			</div>
+
 			<div class="tf-tracker-header">
 				<h2><?php esc_html_e( 'Participant Tracker', 'testflow' ); ?></h2>
 				<div class="tf-add-participant">
-					<input
-						type="text"
-						id="tf-new-username"
-						class="tf-text-input"
-						placeholder="<?php esc_attr_e( '@username', 'testflow' ); ?>"
-					>
+					<select id="tf-participant-select" class="tf-text-input">
+						<option value=""><?php esc_html_e( '— select participant —', 'testflow' ); ?></option>
+					</select>
 					<button id="tf-add-participant-btn" class="button button-primary">
 						<?php esc_html_e( '+ Add Participant', 'testflow' ); ?>
 					</button>

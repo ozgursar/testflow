@@ -8,13 +8,16 @@
 	// ── State ────────────────────────────────────────────────────
 
 	const state = {
-		participants:        [],
-		nextId:              1,
-		phase:               'opening',
-		elapsedAtStart:      0,     // seconds elapsed when timer was last started/resumed
-		startTimestamp:      null,  // Date.now() when timer was last started
-		timerRunning:        false,
-		timerInterval:       null,
+		participants:         [],
+		nextId:               1,
+		participantPool:      [],
+		ticketPool:           [],
+		sessionType:          'core',
+		phase:                'opening',
+		elapsedAtStart:       0,
+		startTimestamp:       null,
+		timerRunning:         false,
+		timerInterval:        null,
 		wasRunningBeforeEdit: false,
 		chimePlayed:          false,
 	};
@@ -29,8 +32,8 @@
 	// ── Message templates ────────────────────────────────────────
 
 	const T = {
-		firstAssign:  ( u, t ) => `Thank you @${ u }, for joining us today. You can start working on #${ t }`,
-		followUp:     ( u, t ) => `@${ u } Thank you for adding a report. You could give this a try #${ t }`,
+		firstAssign:  ( u, t ) => `Thank you @${ u }, for joining us today. You can start working on ${ t }`,
+		followUp:     ( u, t ) => `@${ u } Thank you for adding a report. You could give this a try ${ t }`,
 		ack:          ( u )    => `Great work @${ u }, thanks for the report!`,
 		announcement: ( text ) => `Before we start, ${ text }. Feel free to try it out and share your feedback.`,
 		thanks: ( names ) => {
@@ -56,10 +59,6 @@
 			return state.elapsedAtStart + Math.floor( ( Date.now() - state.startTimestamp ) / 1000 );
 		}
 		return state.elapsedAtStart;
-	}
-
-	function getWarningThreshold() {
-		return Math.max( Math.floor( LIMIT_SECONDS * 0.5 ), LIMIT_SECONDS - 600 );
 	}
 
 	function playChime() {
@@ -142,13 +141,16 @@
 
 	function saveSessionState() {
 		localStorage.setItem( STORAGE_KEY, JSON.stringify( {
-			elapsedAtStart: state.elapsedAtStart,
-			startTimestamp: state.startTimestamp,
-			timerRunning:   state.timerRunning,
-			chimePlayed:    state.chimePlayed,
-			phase:          state.phase,
-			participants:   state.participants,
-			nextId:         state.nextId,
+			elapsedAtStart:  state.elapsedAtStart,
+			startTimestamp:  state.startTimestamp,
+			timerRunning:    state.timerRunning,
+			chimePlayed:     state.chimePlayed,
+			phase:           state.phase,
+			sessionType:     state.sessionType,
+			participants:    state.participants,
+			nextId:          state.nextId,
+			participantPool: state.participantPool,
+			ticketPool:      state.ticketPool,
 		} ) );
 	}
 
@@ -161,10 +163,13 @@
 		try {
 			const data = JSON.parse( raw );
 
-			state.phase        = data.phase || 'opening';
-			state.chimePlayed  = data.chimePlayed || false;
-			state.participants = data.participants || [];
-			state.nextId       = data.nextId || 1;
+			state.phase           = data.phase || 'opening';
+			state.sessionType     = data.sessionType || 'core';
+			state.chimePlayed     = data.chimePlayed || false;
+			state.participants    = data.participants || [];
+			state.nextId          = data.nextId || 1;
+			state.participantPool = data.participantPool || [];
+			state.ticketPool      = data.ticketPool || [];
 
 			if ( data.timerRunning && data.startTimestamp ) {
 				state.elapsedAtStart = data.elapsedAtStart || 0;
@@ -176,8 +181,14 @@
 				state.elapsedAtStart = data.elapsedAtStart || 0;
 			}
 
+			qs( '#tf-participant-pool' ).value = state.participantPool.join( '\n' );
+			qs( '#tf-ticket-pool' ).value      = state.ticketPool.join( '\n' );
+
 			updateTimerDisplay();
 			setPhase( state.phase );
+			setSessionType( state.sessionType );
+			renderParticipantSelects();
+			renderTicketSelects();
 			renderTable();
 			refreshThanks();
 		} catch ( e ) {
@@ -199,14 +210,22 @@
 		state.chimePlayed     = false;
 		state.participants    = [];
 		state.nextId          = 1;
+		state.participantPool = [];
+		state.ticketPool      = [];
+		state.sessionType     = 'core';
 
-		qs( '#tf-timer' ).textContent = '00:00';
+		qs( '#tf-timer' ).textContent        = '00:00';
 		qs( '#tf-timer' ).classList.remove( 'is-warning' );
-		qs( '#tf-timer-btn' ).textContent = '▶ Start';
+		qs( '#tf-timer-btn' ).textContent    = '▶ Start';
+		qs( '#tf-participant-pool' ).value   = '';
+		qs( '#tf-ticket-pool' ).value        = '';
 
 		localStorage.removeItem( STORAGE_KEY );
 
 		setPhase( 'opening' );
+		setSessionType( 'core' );
+		renderParticipantSelects();
+		renderTicketSelects();
 		renderTable();
 		refreshThanks();
 	}
@@ -283,12 +302,82 @@
 		btn.textContent = 'Save';
 	}
 
+	// ── Session type ─────────────────────────────────────────────
+
+	function setSessionType( type ) {
+		state.sessionType = type;
+		qsa( '.tf-session-type-btn' ).forEach( ( btn ) => {
+			btn.classList.toggle( 'is-active', btn.dataset.type === type );
+		} );
+	}
+
 	// ── Phase ────────────────────────────────────────────────────
 
 	function setPhase( phase ) {
 		state.phase = phase;
 		qsa( '.tf-phase-btn' ).forEach( ( btn ) => {
 			btn.classList.toggle( 'is-active', btn.dataset.phase === phase );
+		} );
+	}
+
+	// ── Pools ────────────────────────────────────────────────────
+
+	function parsePool( text ) {
+		return text.split( '\n' ).map( ( s ) => s.trim() ).filter( Boolean );
+	}
+
+	function ticketLabel( url ) {
+		try {
+			const parts = new URL( url ).pathname.split( '/' ).filter( Boolean );
+			return '#' + parts[ parts.length - 1 ];
+		} catch ( e ) {
+			return url.length > 40 ? url.slice( 0, 40 ) + '…' : url;
+		}
+	}
+
+	function renderParticipantSelects() {
+		const options = state.participantPool
+			.map( ( name ) => `<option value="${ name }">@${ name }</option>` )
+			.join( '' );
+
+		[ '#tf-participant-select', '#tf-assign-username' ].forEach( ( sel ) => {
+			const el = qs( sel );
+			if ( ! el ) {
+				return;
+			}
+			const placeholder = el.querySelector( 'option[value=""]' );
+			const label       = placeholder ? placeholder.textContent : '—';
+			el.innerHTML      = `<option value="">${ label }</option>${ options }`;
+		} );
+	}
+
+	function getAvailableTickets() {
+		const usedTickets = new Set(
+			state.participants
+				.filter( ( p ) => p.ticket )
+				.map( ( p ) => p.ticket )
+		);
+		return state.ticketPool.filter( ( url ) => ! usedTickets.has( url ) );
+	}
+
+	function renderTicketSelects() {
+		const options = getAvailableTickets()
+			.map( ( url ) => `<option value="${ url }">${ ticketLabel( url ) }</option>` )
+			.join( '' );
+
+		const assignSelect = qs( '#tf-assign-ticket' );
+		if ( assignSelect ) {
+			const placeholder = assignSelect.querySelector( 'option[value=""]' );
+			const label       = placeholder ? placeholder.textContent : '—';
+			assignSelect.innerHTML = `<option value="">${ label }</option>${ options }`;
+		}
+
+		qsa( '.tf-inline-ticket-select' ).forEach( ( el ) => {
+			const current = el.value;
+			el.innerHTML  = `<option value="">— ticket / issue —</option>${ options }`;
+			if ( current ) {
+				el.value = current;
+			}
 		} );
 	}
 
@@ -337,11 +426,9 @@
 
 	// ── Participants ─────────────────────────────────────────────
 
-	function addParticipant( raw ) {
-		const username = raw.trim().replace( /^@/, '' );
-
+	function addParticipant( username ) {
 		if ( ! username ) {
-			toast( 'Enter a username' );
+			toast( 'Select a participant' );
 			return;
 		}
 
@@ -356,11 +443,9 @@
 		saveSessionState();
 	}
 
-	function assignTicket( id, raw, isFollowUp ) {
-		const ticket = raw.trim().replace( /^#/, '' );
-
-		if ( ! ticket ) {
-			toast( 'Enter a ticket number' );
+	function assignTicket( id, url, isFollowUp ) {
+		if ( ! url ) {
+			toast( 'Select a ticket' );
 			return;
 		}
 
@@ -369,10 +454,10 @@
 			return;
 		}
 
-		p.ticket = ticket;
+		p.ticket = url;
 		p.status = STATUS.TESTING;
 
-		const msg = isFollowUp ? T.followUp( p.username, ticket ) : T.firstAssign( p.username, ticket );
+		const msg = isFollowUp ? T.followUp( p.username, url ) : T.firstAssign( p.username, url );
 		copyText( msg );
 		renderTable();
 		saveSessionState();
@@ -385,6 +470,17 @@
 		}
 		p.status = STATUS.REPORTED;
 		copyText( T.ack( p.username ) );
+		renderTable();
+		saveSessionState();
+	}
+
+	function returnTicket( id ) {
+		const p = state.participants.find( ( p ) => p.id === id );
+		if ( ! p ) {
+			return;
+		}
+		p.ticket = null;
+		p.status = STATUS.JOINED;
 		renderTable();
 		saveSessionState();
 	}
@@ -432,6 +528,7 @@
 		}
 
 		state.participants.forEach( ( p ) => tbody.appendChild( buildRow( p ) ) );
+		renderTicketSelects();
 	}
 
 	function buildRow( p ) {
@@ -446,10 +543,10 @@
 		if ( p.ticket ) {
 			const a = cel( 'a' );
 			a.className   = 'tf-ticket-link';
-			a.href        = `https://core.trac.wordpress.org/ticket/${ p.ticket }`;
+			a.href        = p.ticket;
 			a.target      = '_blank';
 			a.rel         = 'noopener noreferrer';
-			a.textContent = `#${ p.ticket }`;
+			a.textContent = ticketLabel( p.ticket );
 			tdTicket.appendChild( a );
 		} else {
 			tdTicket.textContent = '—';
@@ -477,28 +574,44 @@
 		wrap.className = 'tf-row-actions';
 
 		if ( STATUS.JOINED === p.status || STATUS.REPORTED === p.status ) {
-			const input       = cel( 'input' );
-			input.type        = 'text';
-			input.className   = 'tf-ticket-input';
-			input.placeholder = '#ticket';
+			const select       = cel( 'select' );
+			select.className   = 'tf-inline-ticket-select';
+
+			const emptyOpt     = cel( 'option' );
+			emptyOpt.value     = '';
+			emptyOpt.textContent = '— ticket / issue —';
+			select.appendChild( emptyOpt );
+
+			getAvailableTickets().forEach( ( url ) => {
+				const opt       = cel( 'option' );
+				opt.value       = url;
+				opt.textContent = ticketLabel( url );
+				select.appendChild( opt );
+			} );
 
 			const btn         = cel( 'button' );
 			btn.className     = 'button button-small button-primary';
 			btn.textContent   = STATUS.REPORTED === p.status ? 'Assign Next' : 'Assign';
 
-			const doAssign = () => assignTicket( p.id, input.value, STATUS.REPORTED === p.status );
+			const doAssign = () => assignTicket( p.id, select.value, STATUS.REPORTED === p.status );
 			btn.addEventListener( 'click', doAssign );
-			input.addEventListener( 'keydown', ( e ) => { if ( 'Enter' === e.key ) { doAssign(); } } );
 
-			wrap.append( input, btn );
+			wrap.append( select, btn );
 		}
 
 		if ( STATUS.TESTING === p.status ) {
-			const btn       = cel( 'button' );
-			btn.className   = 'button button-small';
-			btn.textContent = '✓ Mark Reported';
-			btn.addEventListener( 'click', () => markReported( p.id ) );
-			wrap.appendChild( btn );
+			const reportBtn       = cel( 'button' );
+			reportBtn.className   = 'button button-small';
+			reportBtn.textContent = '✓ Mark Reported';
+			reportBtn.addEventListener( 'click', () => markReported( p.id ) );
+			wrap.appendChild( reportBtn );
+
+			const returnBtn       = cel( 'button' );
+			returnBtn.className   = 'button button-small';
+			returnBtn.textContent = '↩ Return';
+			returnBtn.title       = 'Return ticket to the pool';
+			returnBtn.addEventListener( 'click', () => returnTicket( p.id ) );
+			wrap.appendChild( returnBtn );
 		}
 
 		if ( STATUS.DONE !== p.status ) {
@@ -533,15 +646,15 @@
 	// ── Assignment preview ───────────────────────────────────────
 
 	function refreshAssignPreview() {
-		const u       = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
-		const t       = qs( '#tf-assign-ticket' ).value.trim().replace( /^#/, '' );
+		const u       = qs( '#tf-assign-username' ).value;
+		const t       = qs( '#tf-assign-ticket' ).value;
 		const preview = qs( '#tf-assign-preview' );
 
 		if ( u && t ) {
 			preview.textContent = T.firstAssign( u, t );
 			preview.classList.remove( 'tf-preview--muted' );
 		} else {
-			preview.textContent = 'Enter username and ticket number above';
+			preview.textContent = 'Select participant and ticket above';
 			preview.classList.add( 'tf-preview--muted' );
 		}
 	}
@@ -591,6 +704,25 @@
 			}
 		} );
 
+		qs( '.tf-session-type' ).addEventListener( 'click', ( e ) => {
+			if ( e.target.classList.contains( 'tf-session-type-btn' ) ) {
+				setSessionType( e.target.dataset.type );
+				saveSessionState();
+			}
+		} );
+
+		qs( '#tf-participant-pool' ).addEventListener( 'input', function () {
+			state.participantPool = parsePool( this.value );
+			renderParticipantSelects();
+			saveSessionState();
+		} );
+
+		qs( '#tf-ticket-pool' ).addEventListener( 'input', function () {
+			state.ticketPool = parsePool( this.value );
+			renderTicketSelects();
+			saveSessionState();
+		} );
+
 		document.addEventListener( 'click', ( e ) => {
 			if ( e.target.matches( '.tf-copy-btn[data-msg]' ) ) {
 				copyText( e.target.dataset.msg, e.target );
@@ -618,46 +750,43 @@
 		} );
 
 		[ '#tf-assign-username', '#tf-assign-ticket' ].forEach( ( sel ) => {
-			qs( sel ).addEventListener( 'input', refreshAssignPreview );
+			qs( sel ).addEventListener( 'change', refreshAssignPreview );
 		} );
 
 		qs( '#tf-copy-first-assign' ).addEventListener( 'click', function () {
-			const u = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
-			const t = qs( '#tf-assign-ticket' ).value.trim().replace( /^#/, '' );
+			const u = qs( '#tf-assign-username' ).value;
+			const t = qs( '#tf-assign-ticket' ).value;
 			if ( ! u || ! t ) {
-				toast( 'Enter both username and ticket number' );
+				toast( 'Select both participant and ticket' );
 				return;
 			}
 			copyText( T.firstAssign( u, t ), this );
 		} );
 
 		qs( '#tf-copy-followup' ).addEventListener( 'click', function () {
-			const u = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
-			const t = qs( '#tf-assign-ticket' ).value.trim().replace( /^#/, '' );
+			const u = qs( '#tf-assign-username' ).value;
+			const t = qs( '#tf-assign-ticket' ).value;
 			if ( ! u || ! t ) {
-				toast( 'Enter both username and ticket number' );
+				toast( 'Select both participant and ticket' );
 				return;
 			}
 			copyText( T.followUp( u, t ), this );
 		} );
 
 		qs( '#tf-copy-ack' ).addEventListener( 'click', function () {
-			const u = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
+			const u = qs( '#tf-assign-username' ).value;
 			if ( ! u ) {
-				toast( 'Enter a username' );
+				toast( 'Select a participant' );
 				return;
 			}
 			copyText( T.ack( u ), this );
 		} );
 
-		const newUsernameInput = qs( '#tf-new-username' );
-		const doAdd = () => {
-			addParticipant( newUsernameInput.value );
-			newUsernameInput.value = '';
-			newUsernameInput.focus();
-		};
-		qs( '#tf-add-participant-btn' ).addEventListener( 'click', doAdd );
-		newUsernameInput.addEventListener( 'keydown', ( e ) => { if ( 'Enter' === e.key ) { doAdd(); } } );
+		qs( '#tf-add-participant-btn' ).addEventListener( 'click', () => {
+			const select = qs( '#tf-participant-select' );
+			addParticipant( select.value );
+			select.value = '';
+		} );
 
 		qs( '#tf-copy-thanks' ).addEventListener( 'click', function () {
 			if ( 0 === state.participants.length ) {
