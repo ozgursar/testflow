@@ -97,6 +97,7 @@ class TestFlow_Admin {
 				(string) filemtime( TESTFLOW_DIR . 'assets/js/scrub-session.js' ),
 				true
 			);
+
 		}
 	}
 

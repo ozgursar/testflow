@@ -71,9 +71,10 @@
 	color: #d63638;
 }
 
-.tf-timer-limit {
-	font-size: 13px;
-	color: #646970;
+#tf-timer[contenteditable="true"] {
+	outline: none;
+	border-bottom: 2px solid #2271b1;
+	cursor: text;
 }
 
 /* ── Phase indicator ─────────────────────────────────── */
@@ -100,13 +101,13 @@
 }
 
 .tf-phase-btn:hover {
-	border-color: #2271b1;
-	color: #2271b1;
+	border-color: var( --wp-admin-theme-color );
+	color: var( --wp-admin-theme-color );
 }
 
 .tf-phase-btn.is-active {
-	background: #2271b1;
-	border-color: #2271b1;
+	background: var( --wp-admin-theme-color );
+	border-color: var( --wp-admin-theme-color );
 	color: #fff;
 }
 
@@ -416,5 +417,13 @@
 @media ( max-width: 1100px ) {
 	.tf-body {
 		grid-template-columns: 1fr;
+	}
+}
+
+@media ( max-width: 600px ) {
+	.tf-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
 	}
 }

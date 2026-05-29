@@ -1,15 +1,22 @@
 ( function () {
 	'use strict';
 
+	const STORAGE_KEY   = 'testflow_options';
+	const WARN_SECONDS  = 55 * 60;
+	const CHIME_SECONDS = 60 * 60;
+
 	// ── State ────────────────────────────────────────────────────
 
 	const state = {
-		participants: [],
-		nextId: 1,
-		phase: 'opening',
-		timerSeconds: 0,
-		timerRunning: false,
-		timerInterval: null,
+		participants:        [],
+		nextId:              1,
+		phase:               'opening',
+		elapsedAtStart:      0,     // seconds elapsed when timer was last started/resumed
+		startTimestamp:      null,  // Date.now() when timer was last started
+		timerRunning:        false,
+		timerInterval:       null,
+		wasRunningBeforeEdit: false,
+		chimePlayed:          false,
 	};
 
 	const STATUS = {
@@ -30,11 +37,9 @@
 			if ( 0 === names.length ) {
 				return 'Thanks [participants] for coming today. 🎉';
 			}
-
 			if ( 1 === names.length ) {
 				return `Thanks ${ names[ 0 ] } for coming today. 🎉`;
 			}
-
 			const last = names[ names.length - 1 ];
 			return `Thanks ${ names.slice( 0, -1 ).join( ', ' ) } and ${ last } for coming today. 🎉`;
 		},
@@ -46,33 +51,202 @@
 		return String( n ).padStart( 2, '0' );
 	}
 
+	function getElapsed() {
+		if ( state.timerRunning && null !== state.startTimestamp ) {
+			return state.elapsedAtStart + Math.floor( ( Date.now() - state.startTimestamp ) / 1000 );
+		}
+		return state.elapsedAtStart;
+	}
+
+	function getWarningThreshold() {
+		return Math.max( Math.floor( LIMIT_SECONDS * 0.5 ), LIMIT_SECONDS - 600 );
+	}
+
+	function playChime() {
+		if ( ! ( window.AudioContext || window.webkitAudioContext ) ) {
+			return;
+		}
+
+		const ctx   = new ( window.AudioContext || window.webkitAudioContext )();
+		const now   = ctx.currentTime;
+		const notes = [ 523.25, 659.25, 783.99 ];
+
+		notes.forEach( ( freq, i ) => {
+			const osc  = ctx.createOscillator();
+			const gain = ctx.createGain();
+
+			osc.connect( gain );
+			gain.connect( ctx.destination );
+
+			osc.type            = 'sine';
+			osc.frequency.value = freq;
+
+			const start = now + i * 0.18;
+			gain.gain.setValueAtTime( 0, start );
+			gain.gain.linearRampToValueAtTime( 0.25, start + 0.01 );
+			gain.gain.exponentialRampToValueAtTime( 0.001, start + 1.8 );
+
+			osc.start( start );
+			osc.stop( start + 1.8 );
+		} );
+	}
+
+	function updateTimerDisplay() {
+		const elapsed  = getElapsed();
+		const el       = qs( '#tf-timer' );
+		el.textContent = `${ pad( Math.floor( elapsed / 60 ) ) }:${ pad( elapsed % 60 ) }`;
+		el.classList.toggle( 'is-warning', elapsed >= WARN_SECONDS );
+	}
+
 	function tickTimer() {
-		state.timerSeconds++;
-		const el = qs( '#tf-timer' );
-		el.textContent = `${ pad( Math.floor( state.timerSeconds / 60 ) ) }:${ pad( state.timerSeconds % 60 ) }`;
-		el.classList.toggle( 'is-warning', state.timerSeconds >= 50 * 60 );
+		updateTimerDisplay();
+
+		if ( ! state.chimePlayed && getElapsed() >= CHIME_SECONDS ) {
+			state.chimePlayed = true;
+			playChime();
+		}
+
+		saveTimerState();
 	}
 
 	function toggleTimer() {
 		if ( state.timerRunning ) {
+			state.elapsedAtStart = getElapsed();
+			state.startTimestamp = null;
 			clearInterval( state.timerInterval );
 			state.timerRunning = false;
 			qs( '#tf-timer-btn' ).textContent = '▶ Resume';
 		} else {
-			state.timerInterval = setInterval( tickTimer, 1000 );
-			state.timerRunning  = true;
+			state.startTimestamp = Date.now();
+			state.timerInterval  = setInterval( tickTimer, 1000 );
+			state.timerRunning   = true;
 			qs( '#tf-timer-btn' ).textContent = '⏸ Pause';
 		}
+		saveTimerState();
 	}
 
 	function resetTimer() {
 		clearInterval( state.timerInterval );
-		state.timerRunning  = false;
-		state.timerSeconds  = 0;
-		const el = qs( '#tf-timer' );
-		el.textContent = '00:00';
-		el.classList.remove( 'is-warning' );
+		state.timerRunning   = false;
+		state.timerInterval  = null;
+		state.startTimestamp = null;
+		state.elapsedAtStart = 0;
+		state.chimePlayed    = false;
+		qs( '#tf-timer' ).textContent = '00:00';
+		qs( '#tf-timer' ).classList.remove( 'is-warning' );
 		qs( '#tf-timer-btn' ).textContent = '▶ Start';
+		saveTimerState();
+	}
+
+	// ── localStorage persistence ─────────────────────────────────
+
+	function saveTimerState() {
+		localStorage.setItem( STORAGE_KEY, JSON.stringify( {
+			elapsedAtStart: state.elapsedAtStart,
+			startTimestamp: state.startTimestamp,
+			timerRunning:   state.timerRunning,
+			phase:          state.phase,
+		} ) );
+	}
+
+	function loadTimerState() {
+		const raw = localStorage.getItem( STORAGE_KEY );
+		if ( ! raw ) {
+			return;
+		}
+
+		try {
+			const data = JSON.parse( raw );
+
+			state.phase = data.phase || 'opening';
+
+			if ( data.timerRunning && data.startTimestamp ) {
+				state.elapsedAtStart = data.elapsedAtStart || 0;
+				state.startTimestamp = data.startTimestamp;
+				state.timerRunning   = true;
+				state.timerInterval  = setInterval( tickTimer, 1000 );
+				qs( '#tf-timer-btn' ).textContent = '⏸ Pause';
+			} else {
+				state.elapsedAtStart = data.elapsedAtStart || 0;
+			}
+
+			updateTimerDisplay();
+			setPhase( state.phase );
+		} catch ( e ) {
+			localStorage.removeItem( STORAGE_KEY );
+		}
+	}
+
+	// ── Edit elapsed time ────────────────────────────────────────
+
+	function parseTimeInput( str ) {
+		str = str.trim();
+		if ( /^\d{1,2}:\d{2}$/.test( str ) ) {
+			const parts = str.split( ':' );
+			return parseInt( parts[ 0 ], 10 ) * 60 + parseInt( parts[ 1 ], 10 );
+		}
+		if ( /^\d+$/.test( str ) ) {
+			return parseInt( str, 10 ) * 60;
+		}
+		return null;
+	}
+
+	function exitEditTimer( applyChanges ) {
+		const el  = qs( '#tf-timer' );
+		const btn = qs( '#tf-edit-limit-btn' );
+
+		if ( applyChanges ) {
+			const seconds = parseTimeInput( el.textContent );
+			if ( null !== seconds && seconds >= 0 ) {
+				state.elapsedAtStart = seconds;
+			}
+		}
+
+		if ( state.wasRunningBeforeEdit ) {
+			state.startTimestamp = Date.now();
+			state.timerInterval  = setInterval( tickTimer, 1000 );
+			state.timerRunning   = true;
+			qs( '#tf-timer-btn' ).textContent = '⏸ Pause';
+		}
+
+		state.wasRunningBeforeEdit          = false;
+		qs( '#tf-timer-btn' ).disabled      = false;
+		updateTimerDisplay();
+		saveTimerState();
+		el.contentEditable = 'false';
+		btn.textContent    = 'Edit';
+	}
+
+	function toggleEditTimer() {
+		const el  = qs( '#tf-timer' );
+		const btn = qs( '#tf-edit-limit-btn' );
+
+		if ( 'true' === el.contentEditable ) {
+			exitEditTimer( true );
+			return;
+		}
+
+		state.wasRunningBeforeEdit = state.timerRunning;
+
+		if ( state.timerRunning ) {
+			state.elapsedAtStart = getElapsed();
+			state.startTimestamp = null;
+			clearInterval( state.timerInterval );
+			state.timerRunning = false;
+		}
+
+		qs( '#tf-timer-btn' ).disabled = true;
+
+		el.contentEditable = 'true';
+		el.focus();
+
+		const range = document.createRange();
+		range.selectNodeContents( el );
+		const sel = window.getSelection();
+		sel.removeAllRanges();
+		sel.addRange( range );
+
+		btn.textContent = 'Save';
 	}
 
 	// ── Phase ────────────────────────────────────────────────────
@@ -156,7 +330,6 @@
 		}
 
 		const p = state.participants.find( ( p ) => p.id === id );
-
 		if ( ! p ) {
 			return;
 		}
@@ -171,11 +344,9 @@
 
 	function markReported( id ) {
 		const p = state.participants.find( ( p ) => p.id === id );
-
 		if ( ! p ) {
 			return;
 		}
-
 		p.status = STATUS.REPORTED;
 		copyText( T.ack( p.username ) );
 		renderTable();
@@ -183,11 +354,9 @@
 
 	function markDone( id ) {
 		const p = state.participants.find( ( p ) => p.id === id );
-
 		if ( ! p ) {
 			return;
 		}
-
 		p.status = STATUS.DONE;
 		renderTable();
 	}
@@ -197,7 +366,6 @@
 		if ( ! window.confirm( `Remove @${ username } from the list?` ) ) {
 			return;
 		}
-
 		state.participants = state.participants.filter( ( p ) => p.id !== id );
 		renderTable();
 		refreshThanks();
@@ -236,7 +404,6 @@
 		tr.appendChild( tdUser );
 
 		const tdTicket = cel( 'td' );
-
 		if ( p.ticket ) {
 			const a = cel( 'a' );
 			a.className   = 'tf-ticket-link';
@@ -249,7 +416,6 @@
 			tdTicket.textContent = '—';
 			tdTicket.style.color = '#646970';
 		}
-
 		tr.appendChild( tdTicket );
 
 		const tdStatus = cel( 'td' );
@@ -272,14 +438,14 @@
 		wrap.className = 'tf-row-actions';
 
 		if ( STATUS.JOINED === p.status || STATUS.REPORTED === p.status ) {
-			const input = cel( 'input' );
+			const input       = cel( 'input' );
 			input.type        = 'text';
 			input.className   = 'tf-ticket-input';
 			input.placeholder = '#ticket';
 
-			const btn     = cel( 'button' );
-			btn.className = 'button button-small button-primary';
-			btn.textContent = STATUS.REPORTED === p.status ? 'Assign Next' : 'Assign';
+			const btn         = cel( 'button' );
+			btn.className     = 'button button-small button-primary';
+			btn.textContent   = STATUS.REPORTED === p.status ? 'Assign Next' : 'Assign';
 
 			const doAssign = () => assignTicket( p.id, input.value, STATUS.REPORTED === p.status );
 			btn.addEventListener( 'click', doAssign );
@@ -350,6 +516,8 @@
 	// ── Init ─────────────────────────────────────────────────────
 
 	function init() {
+		loadTimerState();
+
 		qs( '#tf-timer-btn' ).addEventListener( 'click', toggleTimer );
 
 		qs( '#tf-timer-reset' ).addEventListener( 'click', () => {
@@ -359,9 +527,28 @@
 			}
 		} );
 
+		qs( '#tf-edit-limit-btn' ).addEventListener( 'click', toggleEditTimer );
+
+		qs( '#tf-timer' ).addEventListener( 'keydown', ( e ) => {
+			if ( 'Enter' === e.key ) {
+				e.preventDefault();
+				exitEditTimer( true );
+			}
+			if ( 'Escape' === e.key ) {
+				exitEditTimer( false );
+			}
+		} );
+
+		qs( '#tf-timer' ).addEventListener( 'keypress', ( e ) => {
+			if ( ! /^[\d:]$/.test( e.key ) ) {
+				e.preventDefault();
+			}
+		} );
+
 		qs( '.tf-phases' ).addEventListener( 'click', ( e ) => {
 			if ( e.target.classList.contains( 'tf-phase-btn' ) ) {
 				setPhase( e.target.dataset.phase );
+				saveTimerState();
 			}
 		} );
 
@@ -373,7 +560,6 @@
 
 		qs( '#tf-announcement' ).addEventListener( 'input', function () {
 			const preview = qs( '#tf-announcement-preview' );
-
 			if ( this.value.trim() ) {
 				preview.textContent = T.announcement( this.value.trim() );
 				preview.classList.remove( 'tf-preview--muted' );
@@ -385,12 +571,10 @@
 
 		qs( '#tf-copy-announcement' ).addEventListener( 'click', function () {
 			const val = qs( '#tf-announcement' ).value.trim();
-
 			if ( ! val ) {
 				toast( 'Enter announcement text first' );
 				return;
 			}
-
 			copyText( T.announcement( val ), this );
 		} );
 
@@ -401,35 +585,29 @@
 		qs( '#tf-copy-first-assign' ).addEventListener( 'click', function () {
 			const u = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
 			const t = qs( '#tf-assign-ticket' ).value.trim().replace( /^#/, '' );
-
 			if ( ! u || ! t ) {
 				toast( 'Enter both username and ticket number' );
 				return;
 			}
-
 			copyText( T.firstAssign( u, t ), this );
 		} );
 
 		qs( '#tf-copy-followup' ).addEventListener( 'click', function () {
 			const u = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
 			const t = qs( '#tf-assign-ticket' ).value.trim().replace( /^#/, '' );
-
 			if ( ! u || ! t ) {
 				toast( 'Enter both username and ticket number' );
 				return;
 			}
-
 			copyText( T.followUp( u, t ), this );
 		} );
 
 		qs( '#tf-copy-ack' ).addEventListener( 'click', function () {
 			const u = qs( '#tf-assign-username' ).value.trim().replace( /^@/, '' );
-
 			if ( ! u ) {
 				toast( 'Enter a username' );
 				return;
 			}
-
 			copyText( T.ack( u ), this );
 		} );
 
@@ -439,7 +617,6 @@
 			newUsernameInput.value = '';
 			newUsernameInput.focus();
 		};
-
 		qs( '#tf-add-participant-btn' ).addEventListener( 'click', doAdd );
 		newUsernameInput.addEventListener( 'keydown', ( e ) => { if ( 'Enter' === e.key ) { doAdd(); } } );
 
@@ -448,7 +625,6 @@
 				toast( 'Add participants first' );
 				return;
 			}
-
 			copyText( qs( '#tf-thanks-preview' ).dataset.msg, this );
 		} );
 

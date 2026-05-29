@@ -8,12 +8,12 @@
 defined( 'ABSPATH' ) || exit;
 
 $messages = array(
-	'here'            => "/here We are starting today's <patch-testing-scrub>",
-	'welcome'         => 'Hello everyone 👋',
-	'invite'          => "If you're around, we'd love your help with testing and sharing reports.",
-	'call'            => "If you're ready to start patch testing, please reply in this thread so I can assign you a ticket. 🧵",
-	'close_end'       => "Well, this marks the end of today's </patch-testing-session>",
-	'close_reassure'  => "Feel free to ping me if you need to comment on anything, and also if you have not finished with your patch testing, you can continue for as long as you want, and ping me if you have any trouble finishing.",
+	'here'           => "/here We are starting today's <patch-testing-scrub>",
+	'welcome'        => 'Hello everyone 👋',
+	'invite'         => "If you're around, we'd love your help with testing and sharing reports.",
+	'call'           => "If you're ready to start patch testing, please reply in this thread so I can assign you a ticket. 🧵",
+	'close_end'      => "Well, this marks the end of today's </patch-testing-session>",
+	'close_reassure' => 'Feel free to ping me if you need to comment on anything, and also if you have not finished with your patch testing, you can continue for as long as you want, and ping me if you have any trouble finishing.',
 );
 
 $opening_messages = array(
@@ -53,9 +53,9 @@ $closing_messages = array(
 		<h1><?php esc_html_e( 'Patch Testing Scrub', 'testflow' ); ?></h1>
 		<div class="tf-timer-controls">
 			<button id="tf-timer-reset" class="button"><?php esc_html_e( 'Reset', 'testflow' ); ?></button>
+			<button id="tf-edit-limit-btn" class="button"><?php esc_html_e( 'Edit', 'testflow' ); ?></button>
 			<button id="tf-timer-btn" class="button button-primary">&#9654; <?php esc_html_e( 'Start', 'testflow' ); ?></button>
 			<span id="tf-timer" class="tf-timer">00:00</span>
-			<span class="tf-timer-limit">/ 60:00</span>
 		</div>
 	</div>
 
