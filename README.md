@@ -1,6 +1,6 @@
 # TestFlow
 
-Session facilitator for WordPress Test Team moderators.
+Session facilitator for WordPress Test Team members.
 
 ## Overview
 
