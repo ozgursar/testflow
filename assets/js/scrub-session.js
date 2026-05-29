@@ -106,7 +106,7 @@
 			playChime();
 		}
 
-		saveTimerState();
+		saveSessionState();
 	}
 
 	function toggleTimer() {
@@ -122,7 +122,7 @@
 			state.timerRunning   = true;
 			qs( '#tf-timer-btn' ).textContent = '⏸ Pause';
 		}
-		saveTimerState();
+		saveSessionState();
 	}
 
 	function resetTimer() {
@@ -135,21 +135,24 @@
 		qs( '#tf-timer' ).textContent = '00:00';
 		qs( '#tf-timer' ).classList.remove( 'is-warning' );
 		qs( '#tf-timer-btn' ).textContent = '▶ Start';
-		saveTimerState();
+		saveSessionState();
 	}
 
 	// ── localStorage persistence ─────────────────────────────────
 
-	function saveTimerState() {
+	function saveSessionState() {
 		localStorage.setItem( STORAGE_KEY, JSON.stringify( {
 			elapsedAtStart: state.elapsedAtStart,
 			startTimestamp: state.startTimestamp,
 			timerRunning:   state.timerRunning,
+			chimePlayed:    state.chimePlayed,
 			phase:          state.phase,
+			participants:   state.participants,
+			nextId:         state.nextId,
 		} ) );
 	}
 
-	function loadTimerState() {
+	function loadSessionState() {
 		const raw = localStorage.getItem( STORAGE_KEY );
 		if ( ! raw ) {
 			return;
@@ -158,7 +161,10 @@
 		try {
 			const data = JSON.parse( raw );
 
-			state.phase = data.phase || 'opening';
+			state.phase        = data.phase || 'opening';
+			state.chimePlayed  = data.chimePlayed || false;
+			state.participants = data.participants || [];
+			state.nextId       = data.nextId || 1;
 
 			if ( data.timerRunning && data.startTimestamp ) {
 				state.elapsedAtStart = data.elapsedAtStart || 0;
@@ -172,9 +178,37 @@
 
 			updateTimerDisplay();
 			setPhase( state.phase );
+			renderTable();
+			refreshThanks();
 		} catch ( e ) {
 			localStorage.removeItem( STORAGE_KEY );
 		}
+	}
+
+	function resetSession() {
+		// eslint-disable-next-line no-alert
+		if ( ! window.confirm( 'Reset the session? This will clear all participants and reset the timer.' ) ) {
+			return;
+		}
+
+		clearInterval( state.timerInterval );
+		state.timerRunning    = false;
+		state.timerInterval   = null;
+		state.startTimestamp  = null;
+		state.elapsedAtStart  = 0;
+		state.chimePlayed     = false;
+		state.participants    = [];
+		state.nextId          = 1;
+
+		qs( '#tf-timer' ).textContent = '00:00';
+		qs( '#tf-timer' ).classList.remove( 'is-warning' );
+		qs( '#tf-timer-btn' ).textContent = '▶ Start';
+
+		localStorage.removeItem( STORAGE_KEY );
+
+		setPhase( 'opening' );
+		renderTable();
+		refreshThanks();
 	}
 
 	// ── Edit elapsed time ────────────────────────────────────────
@@ -212,7 +246,7 @@
 		state.wasRunningBeforeEdit          = false;
 		qs( '#tf-timer-btn' ).disabled      = false;
 		updateTimerDisplay();
-		saveTimerState();
+		saveSessionState();
 		el.contentEditable = 'false';
 		btn.textContent    = 'Edit';
 	}
@@ -319,6 +353,7 @@
 		state.participants.push( { id: state.nextId++, username, ticket: null, status: STATUS.JOINED } );
 		renderTable();
 		refreshThanks();
+		saveSessionState();
 	}
 
 	function assignTicket( id, raw, isFollowUp ) {
@@ -340,6 +375,7 @@
 		const msg = isFollowUp ? T.followUp( p.username, ticket ) : T.firstAssign( p.username, ticket );
 		copyText( msg );
 		renderTable();
+		saveSessionState();
 	}
 
 	function markReported( id ) {
@@ -350,6 +386,7 @@
 		p.status = STATUS.REPORTED;
 		copyText( T.ack( p.username ) );
 		renderTable();
+		saveSessionState();
 	}
 
 	function markDone( id ) {
@@ -359,6 +396,7 @@
 		}
 		p.status = STATUS.DONE;
 		renderTable();
+		saveSessionState();
 	}
 
 	function removeParticipant( id, username ) {
@@ -369,6 +407,7 @@
 		state.participants = state.participants.filter( ( p ) => p.id !== id );
 		renderTable();
 		refreshThanks();
+		saveSessionState();
 	}
 
 	// ── Render table ─────────────────────────────────────────────
@@ -516,7 +555,7 @@
 	// ── Init ─────────────────────────────────────────────────────
 
 	function init() {
-		loadTimerState();
+		loadSessionState();
 
 		qs( '#tf-timer-btn' ).addEventListener( 'click', toggleTimer );
 
@@ -548,7 +587,7 @@
 		qs( '.tf-phases' ).addEventListener( 'click', ( e ) => {
 			if ( e.target.classList.contains( 'tf-phase-btn' ) ) {
 				setPhase( e.target.dataset.phase );
-				saveTimerState();
+				saveSessionState();
 			}
 		} );
 
@@ -627,6 +666,8 @@
 			}
 			copyText( qs( '#tf-thanks-preview' ).dataset.msg, this );
 		} );
+
+		qs( '#tf-reset-session-btn' ).addEventListener( 'click', resetSession );
 
 		renderTable();
 		refreshThanks();

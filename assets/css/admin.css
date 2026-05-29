@@ -120,7 +120,7 @@
 
 .tf-body {
 	display: grid;
-	grid-template-columns: 340px 1fr;
+	grid-template-columns: 1fr 1fr;
 	gap: 16px;
 	align-items: start;
 }
@@ -410,6 +410,24 @@
 .tf-toast.is-visible {
 	opacity: 1;
 	transform: translateY(0);
+}
+
+/* ── Session footer ──────────────────────────────────── */
+
+.tf-session-footer {
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.tf-btn-danger {
+	color: #d63638 !important;
+	border-color: #d63638 !important;
+}
+
+.tf-btn-danger:hover {
+	background: #d63638 !important;
+	color: #fff !important;
 }
 
 /* ── Responsive ──────────────────────────────────────── */

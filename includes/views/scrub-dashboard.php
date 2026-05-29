@@ -189,6 +189,12 @@ $closing_messages = array(
 
 	</div>
 
+	<div class="tf-session-footer">
+		<button id="tf-reset-session-btn" class="button tf-btn-danger">
+			<?php esc_html_e( 'Reset Session', 'testflow' ); ?>
+		</button>
+	</div>
+
 	<div id="tf-toast" class="tf-toast" aria-live="polite"></div>
 
 </div>
