@@ -187,6 +187,17 @@ $template_vars = array( 'agenda_url', 'facilitator', 'note_taker' );
 				</ul>
 			</div>
 
+			<div class="tf-resources tf-moderator-tips">
+				<div class="tf-section-label"><?php esc_html_e( 'Moderator Tips', 'testflow' ); ?></div>
+				<ul class="tf-resource-links">
+				<li><?php esc_html_e( 'Acknowledge all participants – Thank people for their contributions and use their @username when responding.', 'testflow' ); ?></li>
+				<li><?php esc_html_e( 'Ask clarifying questions – Could you elaborate on [topic]?', 'testflow' ); ?></li>
+				<li><?php esc_html_e( 'Summarize and capture action items – Sounds good, we can [next step]', 'testflow' ); ?></li>
+				<li><?php esc_html_e( 'Keep discussions on track – Suggest moving lengthy debates to GitHub', 'testflow' ); ?></li>
+				<li><?php esc_html_e( 'Facilitate, don’t dominate – Allow space for others to speak', 'testflow' ); ?></li>
+				</ul>
+			</div>
+
 		</div>
 
 	</div>

@@ -71,15 +71,27 @@
         "text": "Now let's move on to agenda item: `Test Team Discussions`"
       },
       {
-        "label": "Transition to next item",
-        "text": "Then I think we can move to the next item in the agenda:\n– [AGENDA_ITEM]"
+        "note": true,
+        "text": "FOR EACH AGENDA ITEM FOLLOW THE PATTERN"
       },
       {
-        "label": "Continue on GitHub (Optional)",
+        "note": true,
+        "text": "Provide context if needed — share a brief explanation before opening the topic"
+      },
+      {
+        "label": "Introduce the item",
+        "text": "[AGENDA_ITEM_TITLE]"
+      },
+      {
+        "label": "Transition between items",
+        "text": "Then I think we can move to the next item in the agenda:\n[NEXT_AGENDA_ITEM]"
+      },
+      {
+        "label": "When discussion needs continuation",
         "text": "Let's continue the conversation in the GitHub Issue and bring it back to another chat once there's more consensus on it."
       },
       {
-        "label": "Wrap up discussion (Optional)",
+        "label": "When wrapping up a discussion",
         "text": "We can discuss this on GitHub and make the required changes accordingly."
       }
     ]
@@ -88,7 +100,7 @@
     "duration": "5–10 min",
     "items": [
       {
-        "label": "Time check (optional)",
+        "label": "Time check",
         "text": "10min to end the meeting"
       },
       {

@@ -393,13 +393,8 @@
   }
 
   function flashCopied(btn) {
-    const original = btn.textContent
-    btn.textContent = '✓ Copied!'
     btn.classList.add('is-copied')
-    setTimeout(() => {
-      btn.textContent = original
-      btn.classList.remove('is-copied')
-    }, 1500)
+    setTimeout(() => btn.classList.remove('is-copied'), 1500)
   }
 
   function toast(msg) {
