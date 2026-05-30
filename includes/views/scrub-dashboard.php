@@ -207,14 +207,13 @@ $closing_messages = array(
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'Participant', 'testflow' ); ?></th>
-						<th><?php esc_html_e( 'Ticket', 'testflow' ); ?></th>
-						<th><?php esc_html_e( 'Status', 'testflow' ); ?></th>
-						<th><?php esc_html_e( 'Actions', 'testflow' ); ?></th>
+						<th><?php esc_html_e( 'Tickets', 'testflow' ); ?></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody id="tf-participants-list">
 					<tr class="tf-empty-row">
-						<td colspan="4">
+						<td colspan="3">
 							<?php esc_html_e( 'No participants yet. Add someone above to get started.', 'testflow' ); ?>
 						</td>
 					</tr>
