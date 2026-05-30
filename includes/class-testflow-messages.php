@@ -43,13 +43,26 @@ class TestFlow_Messages {
 	}
 
 	/**
-	 * Returns messages for a specific section.
+	 * Returns the items array for a specific section.
 	 *
-	 * @param string $section Section key (opening, assignment, closing).
+	 * @param string $section Section key.
 	 * @return array
 	 */
 	public static function get_section( $section ) {
-		$all = self::get_all();
-		return isset( $all[ $section ] ) ? $all[ $section ] : array();
+		$all  = self::get_all();
+		$data = isset( $all[ $section ] ) ? $all[ $section ] : array();
+		return isset( $data['items'] ) ? $data['items'] : $data;
+	}
+
+	/**
+	 * Returns the duration string for a specific section, or empty string if none.
+	 *
+	 * @param string $section Section key.
+	 * @return string
+	 */
+	public static function get_duration( $section ) {
+		$all  = self::get_all();
+		$data = isset( $all[ $section ] ) ? $all[ $section ] : array();
+		return isset( $data['duration'] ) ? $data['duration'] : '';
 	}
 }

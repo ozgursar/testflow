@@ -92,7 +92,7 @@
 }
 
 .tf-panel-section {
-  padding: 14px 16px;
+  padding: 16px;
   border-bottom: 1px solid #f0f0f1;
 }
 
@@ -101,11 +101,13 @@
 }
 
 .tf-section-label {
-  font-size: 11px;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: #646970;
+  color: #000;
   margin-bottom: 10px;
 }
 
@@ -113,7 +115,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
+  gap: 16px;
   padding: 8px 0;
   border-bottom: 1px solid #f6f7f7;
 }
@@ -144,6 +146,19 @@
   border-bottom: none;
 }
 
+.tf-duration-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: #edfaef;
+  color: #00a32a;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .tf-section-note {
   font-size: 12px;
   color: #646970;
@@ -151,9 +166,22 @@
   margin: 4px 0 0;
 }
 
+.tf-section-bullets {
+  font-size: 12px;
+  color: #646970;
+  margin: 6px 0 0 16px;
+  padding: 0;
+  list-style: disc;
+}
+
+.tf-section-bullets li {
+  margin-bottom: 3px;
+}
+
 .tf-msg-label {
   font-size: 11px;
-  color: #646970;
+  text-transform: uppercase;
+  color: #ababab;
   margin-bottom: 2px;
 }
 
@@ -514,7 +542,7 @@
 /* ── Clipboard bar ───────────────────────────────────── */
 
 .tf-clipboard-label {
-  margin-top: 16px;
+  margin-top: 20px;
   margin-bottom: 6px;
 }
 
@@ -523,8 +551,10 @@
   border-radius: 4px;
   padding: 12px 16px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .tf-clipboard-text {
@@ -532,13 +562,13 @@
   font-family: monospace;
   font-size: 13px;
   color: #e2e4e7;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .tf-clipboard-text--empty {
-  color: #50575e;
+  color: #7a848e;
   font-style: italic;
 }
 

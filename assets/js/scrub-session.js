@@ -28,15 +28,19 @@
     return tmpl.replace( /\{(\w+)\}/g, ( _, key ) => key in vars ? vars[ key ] : '' )
   }
 
+  function getSectionItems( section ) {
+    const data = window.testflowScrub && window.testflowScrub.messages[ section ]
+    if ( ! data ) return []
+    return Array.isArray( data ) ? data : ( data.items || [] )
+  }
+
   function getMsgByKey( section, key ) {
-    const items = ( window.testflowScrub && window.testflowScrub.messages[ section ] ) || []
-    const found = items.find( item => item.key === key )
+    const found = getSectionItems( section ).find( item => item.key === key )
     return found ? found.text : ''
   }
 
   function getMsgByPlaceholder( section, placeholder ) {
-    const items = ( window.testflowScrub && window.testflowScrub.messages[ section ] ) || []
-    const found = items.find( item => item.text && -1 !== item.text.indexOf( '{' + placeholder + '}' ) )
+    const found = getSectionItems( section ).find( item => item.text && -1 !== item.text.indexOf( '{' + placeholder + '}' ) )
     return found ? found.text : ''
   }
 
@@ -330,6 +334,7 @@
       const label = placeholder ? placeholder.textContent : '—'
       el.innerHTML = `<option value="">${label}</option>${options}`
     })
+
   }
 
   function getAvailableTickets() {
@@ -338,19 +343,20 @@
   }
 
   function renderTicketSelects() {
-    const options = getAvailableTickets()
+    const availableOptions = getAvailableTickets()
       .map(url => `<option value="${url}">${ticketLabel(url)}</option>`)
       .join('')
 
-
     qsa('.tf-inline-ticket-select').forEach(el => {
       const current = el.value
-      el.innerHTML = `<option value="">Select a Ticket </option>${options}`
+      el.innerHTML = `<option value="">Select a Ticket </option>${availableOptions}`
       if (current) {
         el.value = current
       }
     })
+
   }
+
 
   // ── Clipboard ────────────────────────────────────────────────
 

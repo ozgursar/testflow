@@ -1,44 +1,80 @@
 {
-  "opening": [
-    { "label": "Announce start", "text": "/here We are starting today's <patch-testing-scrub>" },
-    { "label": "Welcome", "text": "Hello everyone 👋" },
-    {
-      "label": "Invite participants",
-      "text": "If you're around, we'd love your help with testing and sharing reports."
-    },
-    {
-      "label": "Call for testers",
-      "text": "If you're ready to start patch testing, please reply in this thread so I can assign you a ticket. 🧵"
-    },
-    {
-      "label": "Announcement",
-      "text": "Before we start, {announcement}. Feel free to try it out and share your feedback."
-    }
-  ],
-  "assignment": [
-    {
-      "key": "first_assign",
-      "label": "First assignment",
-      "text": "Thank you @{username}, for joining us today. You can start working on {url}"
-    },
-    {
-      "key": "followup",
-      "label": "Follow-up",
-      "text": "@{username} Thank you for adding a report. You could give this a try {url}"
-    }
-  ],
-  "assignment_guide": [
-    {
-      "note": true,
-      "text": "Start ticket assignments here — use the tracker on the right to assign tickets as participants join."
-    }
-  ],
-  "closing": [
-    { "label": "End session", "text": "Well, this marks the end of today's </patch-testing-session>" },
-    {
-      "label": "Reassure participants",
-      "text": "Feel free to ping me if you need to comment on anything, and also if you have not finished with your patch testing, you can continue for as long as you want, and ping me if you have any trouble finishing."
-    },
-    { "label": "Thank participants", "text": "Thanks {participants} for coming today. 🎉" }
-  ]
+  "opening": {
+    "duration": "2–3 min",
+    "items": [
+      { "label": "Announce start", "text": "/here We are starting today's `<patch-testing-scrub>`" },
+      { "label": "Welcome", "text": "Hello everyone 👋" },
+      {
+        "label": "Invite participants",
+        "text": "If you're around, we'd love your help with testing and sharing reports."
+      },
+      {
+        "label": "Call for testers",
+        "text": "If you're ready to start patch testing, please reply in this thread so I can assign you a ticket. 🧵"
+      },
+      {
+        "label": "Announcement",
+        "text": "Before we start, {announcement}. Feel free to try it out and share your feedback."
+      }
+    ]
+  },
+  "assignment": {
+    "items": [
+      {
+        "key": "first_assign",
+        "label": "First assignment",
+        "text": "Thank you @{username}, for joining us today. You can start working on {url}"
+      },
+      {
+        "key": "followup",
+        "label": "Follow-up",
+        "text": "@{username} Thank you for adding a report. You could give this a try {url}"
+      }
+    ]
+  },
+  "assigning_tickets": {
+    "duration": "40–50 min",
+    "items": [
+      {
+        "note": true,
+        "text": "Use the tracker on the right to assign tickets. The assignment message is automatically copied to your clipboard when you click Assign."
+      },
+      {
+        "bullet": true,
+        "text": "Prioritize tickets that have a numbered milestone (e.g. Milestone: 7.1) then Future release tickets."
+      },
+      {
+        "bullet": true,
+        "text": "Match ticket complexity to the participant's experience level where possible."
+      }
+    ]
+  },
+  "monitoring": {
+    "duration": "ongoing",
+    "items": [
+      {
+        "note": true,
+        "text": "Keep an eye on the thread throughout the session. Acknowledge reports as they come in and offer a new ticket when someone is ready."
+      },
+      {
+        "label": "Acknowledge report",
+        "text": "Great work @[USERNAME], thanks for the report!"
+      },
+      {
+        "label": "Another ticket",
+        "text": "Thanks @[USERNAME]! Here's another one you can try: [TICKET_URL]"
+      }
+    ]
+  },
+  "closing": {
+    "duration": "2–3 min",
+    "items": [
+      { "label": "End session", "text": "Well, this marks the end of today's `</patch-testing-session>`" },
+      {
+        "label": "Reassure participants",
+        "text": "Feel free to ping me if you need to comment on anything, and also if you have not finished with your patch testing, you can continue for as long as you want, and ping me if you have any trouble finishing."
+      },
+      { "label": "Thank participants", "text": "Thanks {participants} for coming today. 🎉" }
+    ]
+  }
 }

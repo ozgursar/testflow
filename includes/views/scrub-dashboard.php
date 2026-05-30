@@ -8,9 +8,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $sections = array(
-	'opening'          => __( 'Opening', 'testflow' ),
-	'assignment_guide' => __( 'Assignments', 'testflow' ),
-	'closing'          => __( 'Closing', 'testflow' ),
+	'opening'          => __( '1. Opening', 'testflow' ),
+	'assigning_tickets' => __( '2. Assigning Tickets', 'testflow' ),
+	'monitoring'       => __( '3. Monitoring the Session', 'testflow' ),
+	'closing'          => __( '4. Closing', 'testflow' ),
 );
 ?>
 
@@ -35,20 +36,40 @@ $sections = array(
 				<?php if ( ! empty( $items ) ) : ?>
 
 				<div class="tf-panel-section">
-					<div class="tf-section-label"><?php echo esc_html( $section_label ); ?></div>
+					<div class="tf-section-label">
+						<?php echo esc_html( $section_label ); ?>
+						<?php $duration = TestFlow_Messages::get_duration( $section_key ); ?>
+						<?php if ( $duration ) : ?>
+						<span class="tf-duration-tag"><?php echo esc_html( $duration ); ?></span>
+						<?php endif; ?>
+					</div>
 
+					<?php $in_list = false; ?>
 					<?php foreach ( $items as $item ) : ?>
 						<?php
-						$text  = isset( $item['text'] ) ? $item['text'] : '';
-						$label = isset( $item['label'] ) ? $item['label'] : '';
+						$text             = isset( $item['text'] ) ? $item['text'] : '';
+						$label            = isset( $item['label'] ) ? $item['label'] : '';
 						$is_note          = ! empty( $item['note'] );
+						$is_bullet        = ! empty( $item['bullet'] );
 						$has_announcement = false !== strpos( $text, '{announcement}' );
 						$has_participants = false !== strpos( $text, '{participants}' );
+
+						if ( ! $is_bullet && $in_list ) {
+							echo '</ul>';
+							$in_list = false;
+						}
 						?>
 
 						<?php if ( $is_note ) : ?>
 
 						<p class="tf-section-note"><?php echo esc_html( $text ); ?></p>
+
+						<?php elseif ( $is_bullet ) : ?>
+						<?php if ( ! $in_list ) : ?>
+						<ul class="tf-section-bullets">
+						<?php $in_list = true; ?>
+						<?php endif; ?>
+						<li><?php echo esc_html( $text ); ?></li>
 
 						<?php elseif ( $has_announcement ) : ?>
 
@@ -101,6 +122,7 @@ $sections = array(
 
 						<?php endif; ?>
 					<?php endforeach; ?>
+					<?php if ( $in_list ) : ?></ul><?php endif; ?>
 
 				</div>
 
@@ -154,16 +176,16 @@ $sections = array(
 					</tr>
 				</tbody>
 			</table>
+
+			<div class="tf-section-label tf-clipboard-label"><?php esc_html_e( 'Your Clipboard', 'testflow' ); ?></div>
+			<div id="tf-clipboard-bar" class="tf-clipboard-bar">
+				<span id="tf-clipboard-text" class="tf-clipboard-text tf-clipboard-text--empty"><?php esc_html_e( 'Nothing copied yet', 'testflow' ); ?></span>
+				<button id="tf-clipboard-copy-btn" class="tf-clipboard-copy-btn" title="<?php esc_attr_e( 'Copy again', 'testflow' ); ?>">
+					<span class="dashicons dashicons-clipboard" aria-hidden="true"></span>
+				</button>
+			</div>
 		</main>
 
-	</div>
-
-	<div class="tf-section-label tf-clipboard-label"><?php esc_html_e( 'Your Clipboard', 'testflow' ); ?></div>
-	<div id="tf-clipboard-bar" class="tf-clipboard-bar">
-		<span id="tf-clipboard-text" class="tf-clipboard-text tf-clipboard-text--empty"><?php esc_html_e( 'Nothing copied yet', 'testflow' ); ?></span>
-		<button id="tf-clipboard-copy-btn" class="tf-clipboard-copy-btn" title="<?php esc_attr_e( 'Copy again', 'testflow' ); ?>">
-			<span class="dashicons dashicons-clipboard" aria-hidden="true"></span>
-		</button>
 	</div>
 
 	<div class="tf-session-footer">
