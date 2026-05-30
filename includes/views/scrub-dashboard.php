@@ -101,13 +101,15 @@ $closing_messages = array(
 				</div>
 				<?php endforeach; ?>
 
-				<div class="tf-msg-row tf-msg-row--stacked">
-					<div class="tf-msg-label"><?php esc_html_e( 'Thank all participants', 'testflow' ); ?></div>
-					<div id="tf-thanks-preview" class="tf-preview tf-preview--muted">
-						<?php esc_html_e( 'Add participants to generate this message', 'testflow' ); ?>
+				<div class="tf-msg-row">
+					<div class="tf-msg-content">
+						<div class="tf-msg-label"><?php esc_html_e( 'Thank all participants', 'testflow' ); ?></div>
+						<div id="tf-thanks-preview" class="tf-msg-text tf-preview--muted">
+							<?php esc_html_e( 'Add participants to generate this message', 'testflow' ); ?>
+						</div>
 					</div>
-					<button id="tf-copy-thanks" class="tf-copy-btn tf-copy-btn--full">
-						<?php esc_html_e( 'Copy Thanks', 'testflow' ); ?>
+					<button id="tf-copy-thanks" class="tf-copy-btn">
+						<?php esc_html_e( 'Copy', 'testflow' ); ?>
 					</button>
 				</div>
 			</div>
