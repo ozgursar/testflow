@@ -8,10 +8,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $sections = array(
-	'opening'          => __( '1. Opening', 'testflow' ),
+	'opening'           => __( '1. Opening', 'testflow' ),
 	'assigning_tickets' => __( '2. Assigning Tickets', 'testflow' ),
-	'monitoring'       => __( '3. Monitoring the Session', 'testflow' ),
-	'closing'          => __( '4. Closing', 'testflow' ),
+	'monitoring'        => __( '3. Monitoring the Session', 'testflow' ),
+	'closing'           => __( '4. Closing', 'testflow' ),
 );
 ?>
 
@@ -68,9 +68,9 @@ $sections = array(
 						<p class="tf-section-note"><?php echo esc_html( $text ); ?></p>
 
 						<?php elseif ( $is_bullet ) : ?>
-						<?php if ( ! $in_list ) : ?>
+							<?php if ( ! $in_list ) : ?>
 						<ul class="tf-section-bullets">
-						<?php $in_list = true; ?>
+								<?php $in_list = true; ?>
 						<?php endif; ?>
 						<li><?php echo esc_html( $text ); ?></li>
 
@@ -116,11 +116,13 @@ $sections = array(
 						<div class="tf-msg-row">
 							<div class="tf-msg-content">
 								<div class="tf-msg-label"><?php echo esc_html( $label ); ?></div>
-								<div class="tf-msg-text"><?php
+								<div class="tf-msg-text">
+								<?php
 									$display = esc_html( $text );
 									$display = preg_replace( '/(&lt;\/?[a-z][a-z0-9-]*&gt;)/i', '<code class="tf-inline-code">$1</code>', $display );
 									echo wp_kses( $display, array( 'code' => array( 'class' => array() ) ) );
-								?></div>
+								?>
+								</div>
 							</div>
 							<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $text ); ?>">
 								<?php esc_html_e( 'Copy', 'testflow' ); ?>
@@ -129,7 +131,10 @@ $sections = array(
 
 						<?php endif; ?>
 					<?php endforeach; ?>
-					<?php if ( $in_list ) : ?></ul><?php endif; ?>
+					<?php
+					if ( $in_list ) :
+						?>
+						</ul><?php endif; ?>
 
 				</div>
 
@@ -138,6 +143,7 @@ $sections = array(
 
 		</aside>
 
+		<div class="tf-right-col">
 		<main class="tf-tracker">
 
 			<div class="tf-pool-setup">
@@ -191,7 +197,20 @@ $sections = array(
 					<span class="dashicons dashicons-clipboard" aria-hidden="true"></span>
 				</button>
 			</div>
+
 		</main>
+
+		<div class="tf-resources">
+			<div class="tf-section-label"><?php esc_html_e( 'Resources & Links', 'testflow' ); ?></div>
+			<ul class="tf-resource-links">
+				<li><a href="https://make.wordpress.org/test/handbook/team-reps/patch-testing-scrub-guide/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Handbook: Patch Testing Scrub Guide', 'testflow' ); ?></a></li>
+				<li><a href="https://core.trac.wordpress.org/query?status=accepted&status=assigned&status=new&status=reopened&status=reviewing&keywords=~needs-testing+has-patch&milestone=!Awaiting+Review&group=milestone&max=0&col=id&col=summary&col=status&col=milestone&col=owner&col=type&col=priority&order=priority" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Trac: Needs Testing', 'testflow' ); ?></a></li>
+				<li><a href="https://github.com/WordPress/gutenberg/issues?q=is%3Aopen+label%3A%22Needs+Testing%22" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Gutenberg: Issues Needs Testing', 'testflow' ); ?></a></li>
+				<li><a href="https://github.com/WordPress/gutenberg/pulls?q=is%3Aopen+is%3Apr+label%3A%22Needs+Testing%22" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Gutenberg: PRs Needs Testing', 'testflow' ); ?></a></li>
+			</ul>
+		</div>
+
+		</div><!-- .tf-right-col -->
 
 	</div>
 

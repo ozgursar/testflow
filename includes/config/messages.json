@@ -28,7 +28,7 @@
       {
         "key": "followup",
         "label": "Follow-up",
-        "text": "@{username} Thank you for adding a report. You could give this a try {url}"
+        "text": "@{username} Thank you for adding a report. Here's another one you can try: {url}"
       }
     ]
   },

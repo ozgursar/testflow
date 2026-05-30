@@ -113,11 +113,15 @@
 
 .tf-msg-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 8px 0;
   border-bottom: 1px solid #f6f7f7;
+}
+
+.tf-msg-row--input {
+  align-items: flex-start;
 }
 
 .tf-msg-row:last-child {
@@ -556,6 +560,37 @@
 }
 
 /* ── Clipboard bar ───────────────────────────────────── */
+
+.tf-resources {
+  margin-top: 24px;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.tf-resources .tf-section-label {
+  color: #6d7075;
+}
+
+.tf-resource-links {
+  margin: 6px 0 0 16px;
+  padding: 0;
+  list-style: disc;
+}
+
+.tf-resource-links li {
+  margin-bottom: 4px;
+}
+
+.tf-resource-links a {
+  color: #8c8f94;
+  text-decoration: none;
+}
+
+.tf-resource-links a:hover {
+  color: #50575e;
+  text-decoration: underline;
+}
 
 .tf-clipboard-label {
   margin-top: 20px;
