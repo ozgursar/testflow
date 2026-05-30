@@ -371,7 +371,7 @@
 
     qsa('.tf-inline-ticket-select').forEach(el => {
       const current = el.value
-      el.innerHTML = `<option value="">— ticket / issue —</option>${options}`
+      el.innerHTML = `<option value="">Select a Ticket </option>${options}`
       if (current) {
         el.value = current
       }
@@ -469,17 +469,6 @@
     saveSessionState()
   }
 
-  function removeParticipant(id, username) {
-    // eslint-disable-next-line no-alert
-    if (!window.confirm(`Remove @${username} from the list?`)) {
-      return
-    }
-    state.participants = state.participants.filter(p => p.id !== id)
-    renderTable()
-    refreshThanks()
-    saveSessionState()
-  }
-
   // ── Render table ─────────────────────────────────────────────
 
   function renderTable() {
@@ -565,13 +554,6 @@
     btn.addEventListener('click', () => assignTicket(p.id, select.value))
 
     wrap.append(select, btn)
-
-    const removeBtn = cel('button')
-    removeBtn.className = 'button button-small tf-btn-remove'
-    removeBtn.title = 'Remove participant'
-    removeBtn.textContent = '✕'
-    removeBtn.addEventListener('click', () => removeParticipant(p.id, p.username))
-    wrap.appendChild(removeBtn)
 
     return wrap
   }
@@ -661,10 +643,32 @@
       }
     })
 
-    qs('#tf-participant-pool').addEventListener('input', function () {
-      state.participantPool = parsePool(this.value)
+    const syncParticipants = value => {
+      const newPool = parsePool(value)
+
+      newPool.forEach(username => {
+        if (!state.participants.find(p => p.username === username)) {
+          state.participants.push({ id: state.nextId++, username, tickets: [] })
+        }
+      })
+
+      state.participants = state.participants.filter(p => newPool.includes(p.username))
+
+      state.participantPool = newPool
       renderParticipantSelects()
+      renderTable()
+      refreshThanks()
       saveSessionState()
+    }
+
+    const participantPoolEl = qs('#tf-participant-pool')
+    participantPoolEl.addEventListener('blur', function () {
+      syncParticipants(this.value)
+    })
+    participantPoolEl.addEventListener('keyup', e => {
+      if ('Enter' === e.key) {
+        syncParticipants(participantPoolEl.value)
+      }
     })
 
     qs('#tf-ticket-pool').addEventListener('input', function () {
@@ -729,12 +733,6 @@
         return
       }
       copyText(T.ack(u), this)
-    })
-
-    qs('#tf-add-participant-btn').addEventListener('click', () => {
-      const select = qs('#tf-participant-select')
-      addParticipant(select.value)
-      select.value = ''
     })
 
     qs('#tf-copy-thanks').addEventListener('click', function () {

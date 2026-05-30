@@ -328,6 +328,16 @@
 
 .tf-table th {
   font-size: 12px;
+  background: #f0f0f1;
+}
+
+.tf-table tbody td {
+  border-bottom: 1px solid #f5f5f5 !important;
+  vertical-align: middle;
+}
+
+.tf-table tbody tr:hover td {
+  background: #f5f5f5;
 }
 
 .tf-empty-row td {
@@ -417,7 +427,7 @@
   line-height: 1;
   padding: 0.5px 0 1.5px 0;
   vertical-align: middle;
-  margin-left: 2px;
+  margin: 0 1px 3px 3px;
 }
 
 .tf-ticket-remove-btn:hover {
@@ -528,7 +538,6 @@
   padding: 6px 8px;
   resize: vertical;
   box-sizing: border-box;
-  font-family: monospace;
   line-height: 1.6;
   white-space: pre;
   overflow-x: auto;

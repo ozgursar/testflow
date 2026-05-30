@@ -191,23 +191,11 @@ $closing_messages = array(
 				</div>
 			</div>
 
-			<div class="tf-tracker-header">
-				<h2><?php esc_html_e( 'Participant Tracker', 'testflow' ); ?></h2>
-				<div class="tf-add-participant">
-					<select id="tf-participant-select" class="tf-text-input">
-						<option value=""><?php esc_html_e( '— select participant —', 'testflow' ); ?></option>
-					</select>
-					<button id="tf-add-participant-btn" class="button button-primary">
-						<?php esc_html_e( '+ Add Participant', 'testflow' ); ?>
-					</button>
-				</div>
-			</div>
-
 			<table class="widefat tf-table">
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'Participant', 'testflow' ); ?></th>
-						<th><?php esc_html_e( 'Tickets', 'testflow' ); ?></th>
+						<th><?php esc_html_e( 'Assigned Tickets', 'testflow' ); ?></th>
 						<th></th>
 					</tr>
 				</thead>
