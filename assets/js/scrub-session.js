@@ -22,21 +22,29 @@
 
   // ── Message templates ────────────────────────────────────────
 
-  const T = {
-    firstAssign: (u, t) => `Thank you @${u}, for joining us today. You can start working on ${t}`,
-    followUp: (u, t) => `@${u} Thank you for adding a report. You could give this a try ${t}`,
-    ack: u => `Great work @${u}, thanks for the report!`,
-    announcement: text => `Before we start, ${text}. Feel free to try it out and share your feedback.`,
-    thanks: names => {
-      if (0 === names.length) {
-        return 'Thanks [participants] for coming today. 🎉'
-      }
-      if (1 === names.length) {
-        return `Thanks ${names[0]} for coming today. 🎉`
-      }
-      const last = names[names.length - 1]
-      return `Thanks ${names.slice(0, -1).join(', ')} and ${last} for coming today. 🎉`
-    }
+  // ── Template engine ──────────────────────────────────────────
+
+  function applyTemplate( tmpl, vars ) {
+    return tmpl.replace( /\{(\w+)\}/g, ( _, key ) => key in vars ? vars[ key ] : '' )
+  }
+
+  function getMsgByKey( section, key ) {
+    const items = ( window.testflowScrub && window.testflowScrub.messages[ section ] ) || []
+    const found = items.find( item => item.key === key )
+    return found ? found.text : ''
+  }
+
+  function getMsgByPlaceholder( section, placeholder ) {
+    const items = ( window.testflowScrub && window.testflowScrub.messages[ section ] ) || []
+    const found = items.find( item => item.text && -1 !== item.text.indexOf( '{' + placeholder + '}' ) )
+    return found ? found.text : ''
+  }
+
+  function formatParticipants( names ) {
+    if ( 0 === names.length ) return '[participants]'
+    if ( 1 === names.length ) return names[ 0 ]
+    const last = names[ names.length - 1 ]
+    return names.slice( 0, -1 ).join( ', ' ) + ' and ' + last
   }
 
   // ── Timer ────────────────────────────────────────────────────
@@ -428,7 +436,8 @@
 
     p.tickets.push(url)
 
-    const msg = 1 === p.tickets.length ? T.firstAssign(p.username, url) : T.followUp(p.username, url)
+    const tmplKey = 1 === p.tickets.length ? 'first_assign' : 'followup'
+    const msg = applyTemplate( getMsgByKey( 'assignment', tmplKey ), { username: p.username, url } )
     copyText(msg)
     renderTable()
     saveSessionState()
@@ -543,7 +552,8 @@
 
   function refreshThanks() {
     const names = state.participants.map(p => `@${p.username}`)
-    const text = T.thanks(names)
+    const thanksTmpl = getMsgByPlaceholder( 'closing', 'participants' )
+    const text = applyTemplate( thanksTmpl, { participants: formatParticipants( names ) } )
     const el = qs('#tf-thanks-preview')
     el.textContent = text
     el.dataset.msg = text
@@ -636,6 +646,28 @@
       }
     })
 
+
+    const announcementInput = qs('#tf-announcement')
+    if (announcementInput) {
+      announcementInput.addEventListener('input', function () {
+        const tmpl    = getMsgByPlaceholder('opening', 'announcement')
+        const preview = qs('#tf-announcement-preview')
+        if (this.value.trim()) {
+          preview.textContent = applyTemplate(tmpl, { announcement: this.value.trim() })
+          preview.classList.remove('tf-preview--muted')
+        } else {
+          preview.textContent = 'Enter announcement text to preview'
+          preview.classList.add('tf-preview--muted')
+        }
+      })
+
+      qs('#tf-copy-announcement').addEventListener('click', function () {
+        const val = announcementInput.value.trim()
+        if (!val) { toast('Enter announcement text first'); return }
+        const tmpl = getMsgByPlaceholder('opening', 'announcement')
+        copyText(applyTemplate(tmpl, { announcement: val }), this)
+      })
+    }
 
     qs('#tf-copy-thanks').addEventListener('click', function () {
       if (0 === state.participants.length) {

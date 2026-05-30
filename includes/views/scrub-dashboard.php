@@ -7,43 +7,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$messages = array(
-	'here'           => "/here We are starting today's <patch-testing-scrub>",
-	'welcome'        => 'Hello everyone 👋',
-	'invite'         => "If you're around, we'd love your help with testing and sharing reports.",
-	'call'           => "If you're ready to start patch testing, please reply in this thread so I can assign you a ticket. 🧵",
-	'close_end'      => "Well, this marks the end of today's </patch-testing-session>",
-	'close_reassure' => 'Feel free to ping me if you need to comment on anything, and also if you have not finished with your patch testing, you can continue for as long as you want, and ping me if you have any trouble finishing.',
-);
-
-$opening_messages = array(
-	array(
-		'text'  => $messages['here'],
-		'label' => __( 'Announce start', 'testflow' ),
-	),
-	array(
-		'text'  => $messages['welcome'],
-		'label' => __( 'Welcome', 'testflow' ),
-	),
-	array(
-		'text'  => $messages['invite'],
-		'label' => __( 'Invite participants', 'testflow' ),
-	),
-	array(
-		'text'  => $messages['call'],
-		'label' => __( 'Call for testers', 'testflow' ),
-	),
-);
-
-$closing_messages = array(
-	array(
-		'text'  => $messages['close_end'],
-		'label' => __( 'End session', 'testflow' ),
-	),
-	array(
-		'text'  => $messages['close_reassure'],
-		'label' => __( 'Reassure participants', 'testflow' ),
-	),
+$sections = array(
+	'opening'          => __( 'Opening', 'testflow' ),
+	'assignment_guide' => __( 'Assignments', 'testflow' ),
+	'closing'          => __( 'Closing', 'testflow' ),
 );
 ?>
 
@@ -59,51 +26,86 @@ $closing_messages = array(
 		</div>
 	</div>
 
-
 	<div class="tf-body">
 
 		<aside class="tf-messages-panel">
 
-			<div class="tf-panel-section">
-				<div class="tf-section-label"><?php esc_html_e( 'Opening', 'testflow' ); ?></div>
+			<?php foreach ( $sections as $section_key => $section_label ) : ?>
+				<?php $items = TestFlow_Messages::get_section( $section_key ); ?>
+				<?php if ( ! empty( $items ) ) : ?>
 
-				<?php foreach ( $opening_messages as $item ) : ?>
-				<div class="tf-msg-row">
-					<div class="tf-msg-content">
-						<div class="tf-msg-label"><?php echo esc_html( $item['label'] ); ?></div>
-						<div class="tf-msg-text"><?php echo esc_html( $item['text'] ); ?></div>
-					</div>
-					<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $item['text'] ); ?>"><?php esc_html_e( 'Copy', 'testflow' ); ?></button>
-				</div>
-				<?php endforeach; ?>
+				<div class="tf-panel-section">
+					<div class="tf-section-label"><?php echo esc_html( $section_label ); ?></div>
 
-			</div>
+					<?php foreach ( $items as $item ) : ?>
+						<?php
+						$text  = isset( $item['text'] ) ? $item['text'] : '';
+						$label = isset( $item['label'] ) ? $item['label'] : '';
+						$is_note          = ! empty( $item['note'] );
+						$has_announcement = false !== strpos( $text, '{announcement}' );
+						$has_participants = false !== strpos( $text, '{participants}' );
+						?>
 
-			<div class="tf-panel-section">
-				<div class="tf-section-label"><?php esc_html_e( 'Closing', 'testflow' ); ?></div>
+						<?php if ( $is_note ) : ?>
 
-				<?php foreach ( $closing_messages as $item ) : ?>
-				<div class="tf-msg-row">
-					<div class="tf-msg-content">
-						<div class="tf-msg-label"><?php echo esc_html( $item['label'] ); ?></div>
-						<div class="tf-msg-text"><?php echo esc_html( $item['text'] ); ?></div>
-					</div>
-					<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $item['text'] ); ?>"><?php esc_html_e( 'Copy', 'testflow' ); ?></button>
-				</div>
-				<?php endforeach; ?>
+						<p class="tf-section-note"><?php echo esc_html( $text ); ?></p>
 
-				<div class="tf-msg-row">
-					<div class="tf-msg-content">
-						<div class="tf-msg-label"><?php esc_html_e( 'Thank all participants', 'testflow' ); ?></div>
-						<div id="tf-thanks-preview" class="tf-msg-text tf-preview--muted">
-							<?php esc_html_e( 'Add participants to generate this message', 'testflow' ); ?>
+						<?php elseif ( $has_announcement ) : ?>
+
+						<div class="tf-msg-row tf-msg-row--input">
+							<div class="tf-msg-content">
+								<div class="tf-msg-label">
+									<?php echo esc_html( $label ); ?>
+									<span class="tf-optional">(<?php esc_html_e( 'optional', 'testflow' ); ?>)</span>
+								</div>
+								<input
+									type="text"
+									id="tf-announcement"
+									class="tf-text-input"
+									placeholder="<?php esc_attr_e( 'e.g. WordPress 7.0 RC 2 is now available…', 'testflow' ); ?>"
+								>
+								<div id="tf-announcement-preview" class="tf-preview tf-preview--muted">
+									<?php esc_html_e( 'Enter announcement text to preview', 'testflow' ); ?>
+								</div>
+							</div>
+							<button id="tf-copy-announcement" class="tf-copy-btn">
+								<?php esc_html_e( 'Copy', 'testflow' ); ?>
+							</button>
 						</div>
-					</div>
-					<button id="tf-copy-thanks" class="tf-copy-btn">
-						<?php esc_html_e( 'Copy', 'testflow' ); ?>
-					</button>
+
+						<?php elseif ( $has_participants ) : ?>
+
+						<div class="tf-msg-row">
+							<div class="tf-msg-content">
+								<div class="tf-msg-label"><?php echo esc_html( $label ); ?></div>
+								<div id="tf-thanks-preview" class="tf-msg-text tf-preview--muted">
+									<?php esc_html_e( 'Add participants to generate this message', 'testflow' ); ?>
+								</div>
+							</div>
+							<button id="tf-copy-thanks" class="tf-copy-btn">
+								<?php esc_html_e( 'Copy', 'testflow' ); ?>
+							</button>
+						</div>
+
+						<?php else : ?>
+
+						<div class="tf-msg-row">
+							<div class="tf-msg-content">
+								<div class="tf-msg-label"><?php echo esc_html( $label ); ?></div>
+								<div class="tf-msg-text"><?php echo esc_html( $text ); ?></div>
+							</div>
+							<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $text ); ?>">
+								<?php esc_html_e( 'Copy', 'testflow' ); ?>
+							</button>
+						</div>
+
+						<?php endif; ?>
+					<?php endforeach; ?>
+
 				</div>
-			</div>
+
+				<?php endif; ?>
+			<?php endforeach; ?>
 
 		</aside>
 

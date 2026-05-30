@@ -98,6 +98,13 @@ class TestFlow_Admin {
 				true
 			);
 
+			wp_localize_script(
+				'testflow-scrub',
+				'testflowScrub',
+				array(
+					'messages' => TestFlow_Messages::get_all(),
+				)
+			);
 		}
 	}
 

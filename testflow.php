@@ -3,7 +3,7 @@
  * Plugin Name:       TestFlow
  * Plugin URI:        https://make.wordpress.org/test/
  * Description:       Session facilitator for WordPress Test Team members.
- * Version:           0.2.1
+ * Version:           0.3.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            WordPress Test Team
@@ -19,6 +19,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'TESTFLOW_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TESTFLOW_URL', plugin_dir_url( __FILE__ ) );
 
+require_once TESTFLOW_DIR . 'includes/class-messages.php';
 require_once TESTFLOW_DIR . 'includes/class-testflow-admin.php';
 
 add_action( 'plugins_loaded', array( 'TestFlow_Admin', 'init' ) );
