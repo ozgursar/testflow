@@ -2,7 +2,7 @@
   "opening": {
     "duration": "2–3 min",
     "items": [
-      { "label": "Announce start", "text": "/here We are starting today's `<patch-testing-scrub>`" },
+      { "label": "Announce start", "text": "/here We are starting today's <patch-testing-scrub>" },
       { "label": "Welcome", "text": "Hello everyone 👋" },
       {
         "label": "Invite participants",
@@ -69,7 +69,7 @@
   "closing": {
     "duration": "2–3 min",
     "items": [
-      { "label": "End session", "text": "Well, this marks the end of today's `</patch-testing-session>`" },
+      { "label": "End session", "text": "Well, this marks the end of today's </patch-testing-session>" },
       {
         "label": "Reassure participants",
         "text": "Feel free to ping me if you need to comment on anything, and also if you have not finished with your patch testing, you can continue for as long as you want, and ping me if you have any trouble finishing."

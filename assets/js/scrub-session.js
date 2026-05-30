@@ -2,8 +2,8 @@
   'use strict'
 
   const STORAGE_KEY = 'testflow_options'
-  const WARN_SECONDS = 55 * 60
-  const CHIME_SECONDS = 60 * 60
+  const WARN_SECONDS = 50 * 60
+  const CHIME_SECONDS = 55 * 60
 
   // ── State ────────────────────────────────────────────────────
 

@@ -149,14 +149,21 @@
 .tf-duration-tag {
   display: inline-flex;
   align-items: center;
-  padding: 1px 7px;
+  gap: 4px;
+  padding: 2px 8px;
   border-radius: 10px;
-  background: #edfaef;
-  color: #00a32a;
+  background: #a285a8;
+  color: #fff;
   font-size: 10px;
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
+}
+
+.tf-duration-tag svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
 }
 
 .tf-section-note {
@@ -192,6 +199,15 @@
 .tf-msg-text {
   color: #1d2327;
   line-height: 1.5;
+}
+
+.tf-inline-code {
+  background: #f0f0f1;
+  border-radius: 3px;
+  padding: 3px 5px;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #1d2327;
 }
 
 /* ── Copy buttons ────────────────────────────────────── */

@@ -40,7 +40,10 @@ $sections = array(
 						<?php echo esc_html( $section_label ); ?>
 						<?php $duration = TestFlow_Messages::get_duration( $section_key ); ?>
 						<?php if ( $duration ) : ?>
-						<span class="tf-duration-tag"><?php echo esc_html( $duration ); ?></span>
+						<span class="tf-duration-tag">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+							<?php echo esc_html( $duration ); ?>
+						</span>
 						<?php endif; ?>
 					</div>
 
@@ -113,7 +116,11 @@ $sections = array(
 						<div class="tf-msg-row">
 							<div class="tf-msg-content">
 								<div class="tf-msg-label"><?php echo esc_html( $label ); ?></div>
-								<div class="tf-msg-text"><?php echo esc_html( $text ); ?></div>
+								<div class="tf-msg-text"><?php
+									$display = esc_html( $text );
+									$display = preg_replace( '/(&lt;\/?[a-z][a-z0-9-]*&gt;)/i', '<code class="tf-inline-code">$1</code>', $display );
+									echo wp_kses( $display, array( 'code' => array( 'class' => array() ) ) );
+								?></div>
 							</div>
 							<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $text ); ?>">
 								<?php esc_html_e( 'Copy', 'testflow' ); ?>
