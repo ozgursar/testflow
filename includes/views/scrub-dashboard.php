@@ -119,6 +119,7 @@ $sections = array(
 								<div class="tf-msg-text">
 								<?php
 									$display = esc_html( $text );
+									$display = preg_replace( '/(`[^`]+`)/', '<code class="tf-inline-code">$1</code>', $display );
 									$display = preg_replace( '/(&lt;\/?[a-z][a-z0-9-]*&gt;)/i', '<code class="tf-inline-code">$1</code>', $display );
 									echo wp_kses( $display, array( 'code' => array( 'class' => array() ) ) );
 								?>

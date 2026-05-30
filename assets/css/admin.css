@@ -561,6 +561,14 @@
 
 /* ── Clipboard bar ───────────────────────────────────── */
 
+.tf-var-field {
+  margin-bottom: 12px;
+}
+
+.tf-var-field:last-child {
+  margin-bottom: 0;
+}
+
 .tf-resources {
   margin-top: 24px;
   border: 1px solid #c3c4c7;

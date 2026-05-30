@@ -1,0 +1,142 @@
+{
+  "opening": {
+    "duration": "2–3 min",
+    "items": [
+      {
+        "label": "Announce start",
+        "text": "/here Hey everyone! Please join us in #core-test for this week's Test Team chat."
+      },
+      {
+        "label": "Announce start (alternative)",
+        "text": "/here We are starting now today's <test-chat>"
+      },
+      {
+        "label": "Welcome",
+        "text": "Hello and welcome to this bi-weekly test team chat meeting!"
+      }
+    ]
+  },
+  "attendance": {
+    "duration": "2 min",
+    "items": [
+      {
+        "label": "Attendance check",
+        "text": "Who is joining us today? Please reply in the thread:\n1. Please say hello and note your WordPress.org profile username, as we will use this to record attendees in the notes.\n2. Feel welcome to introduce yourself briefly and share a flag or your favorite emoji!"
+      },
+      {
+        "label": "Async note",
+        "text": "If you're joining this chat async, please add your details to the thread later and include (async) after your name. This helps us review meeting times and encourage participation across all time zones."
+      }
+    ]
+  },
+  "agenda": {
+    "duration": "1 min",
+    "items": [
+      {
+        "label": "Share agenda",
+        "text": "Today's chat agenda can be found here. Please take a look.\n\n{agenda_url}"
+      }
+    ]
+  },
+  "meeting_notes": {
+    "duration": "1 min",
+    "items": [
+      {
+        "label": "Section header",
+        "text": "`Meeting Notes`"
+      },
+      {
+        "label": "Facilitator & note-taker (same person)",
+        "text": "Today's session facilitator and note-taker is @{facilitator}"
+      },
+      {
+        "label": "Facilitator & note-taker (different people)",
+        "text": "Today's session facilitator is @{facilitator} and the note-taker is @{note_taker}"
+      },
+      {
+        "label": "Upcoming meetings",
+        "text": "You can check upcoming meetings here to stay up to date and get involved.\nhttps://make.wordpress.org/meetings/#test"
+      },
+      {
+        "label": "Call to volunteer",
+        "text": "🙌 If you’d like to volunteer for any open slot, please reply in the thread."
+      }
+    ]
+  },
+  "discussions": {
+    "duration": "30–40 min",
+    "items": [
+      {
+        "label": "Start discussions",
+        "text": "Now let's move on to agenda item: `Test Team Discussions`"
+      },
+      {
+        "label": "Transition to next item",
+        "text": "Then I think we can move to the next item in the agenda:\n– [AGENDA_ITEM]"
+      },
+      {
+        "label": "Continue on GitHub (Optional)",
+        "text": "Let's continue the conversation in the GitHub Issue and bring it back to another chat once there's more consensus on it."
+      },
+      {
+        "label": "Wrap up discussion (Optional)",
+        "text": "We can discuss this on GitHub and make the required changes accordingly."
+      }
+    ]
+  },
+  "open_floor": {
+    "duration": "5–10 min",
+    "items": [
+      {
+        "label": "Time check (optional)",
+        "text": "10min to end the meeting"
+      },
+      {
+        "label": "Open floor",
+        "text": "Let's move to the `Open Floor`"
+      },
+      {
+        "label": "Invite contributions",
+        "text": "Does anyone have anything they'd like to share or discuss?"
+      }
+    ]
+  },
+  "announcements": {
+    "duration": "5–8 min",
+    "items": [
+      {
+        "label": "Intro",
+        "text": "Before we finish the meeting here you have a few links of relevant things that are happening in the WordPress Ecosystem and in the Test Team"
+      },
+      {
+        "label": "Ecosystem announcements",
+        "text": "`WordPress Ecosystem Announcements`"
+      },
+      {
+        "label": "Test Team announcements",
+        "text": "`Test Team Announcements`"
+      },
+      {
+        "label": "Call for Testing",
+        "text": "`Call for Testing`"
+      },
+      {
+        "label": "Check for reactions",
+        "text": "Any comment about any of these resources?"
+      }
+    ]
+  },
+  "closing": {
+    "duration": "1–2 min",
+    "items": [
+      {
+        "label": "Wrap up",
+        "text": "As there are no more comments we can wrap up the meeting."
+      },
+      {
+        "label": "Closing message",
+        "text": "So this brings us to the end of our meeting </test-chat> thank you all for coming."
+      }
+    ]
+  }
+}

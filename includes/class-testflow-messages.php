@@ -65,4 +65,43 @@ class TestFlow_Messages {
 		$data = isset( $all[ $section ] ) ? $all[ $section ] : array();
 		return isset( $data['duration'] ) ? $data['duration'] : '';
 	}
+
+	/**
+	 * Returns all Test Chat messages from the JSON config file.
+	 *
+	 * @return array
+	 */
+	public static function get_test_chat_all() {
+		$file = TESTFLOW_DIR . 'includes/config/messages-test-chat.json';
+		if ( ! file_exists( $file ) ) {
+			return array();
+		}
+		$json = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$data = json_decode( $json, true );
+		return is_array( $data ) ? $data : array();
+	}
+
+	/**
+	 * Returns the items array for a specific Test Chat section.
+	 *
+	 * @param string $section Section key.
+	 * @return array
+	 */
+	public static function get_test_chat_section( $section ) {
+		$all  = self::get_test_chat_all();
+		$data = isset( $all[ $section ] ) ? $all[ $section ] : array();
+		return isset( $data['items'] ) ? $data['items'] : $data;
+	}
+
+	/**
+	 * Returns the duration string for a specific Test Chat section.
+	 *
+	 * @param string $section Section key.
+	 * @return string
+	 */
+	public static function get_test_chat_duration( $section ) {
+		$all  = self::get_test_chat_all();
+		$data = isset( $all[ $section ] ) ? $all[ $section ] : array();
+		return isset( $data['duration'] ) ? $data['duration'] : '';
+	}
 }

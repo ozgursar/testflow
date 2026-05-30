@@ -106,6 +106,24 @@ class TestFlow_Admin {
 				)
 			);
 		}
+
+		if ( $test_chat_hook === $hook ) {
+			wp_enqueue_script(
+				'testflow-test-chat',
+				TESTFLOW_URL . 'assets/js/test-chat-session.js',
+				array(),
+				(string) filemtime( TESTFLOW_DIR . 'assets/js/test-chat-session.js' ),
+				true
+			);
+
+			wp_localize_script(
+				'testflow-test-chat',
+				'testflowTestChat',
+				array(
+					'messages' => TestFlow_Messages::get_test_chat_all(),
+				)
+			);
+		}
 	}
 
 	/**
