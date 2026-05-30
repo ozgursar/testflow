@@ -59,15 +59,6 @@ $closing_messages = array(
 		</div>
 	</div>
 
-	<div class="tf-phases">
-		<button class="tf-phase-btn is-active" data-phase="opening"><?php esc_html_e( '1 · Opening', 'testflow' ); ?></button>
-		<span class="tf-phase-arrow" aria-hidden="true">→</span>
-		<button class="tf-phase-btn" data-phase="assigning"><?php esc_html_e( '2 · Assigning', 'testflow' ); ?></button>
-		<span class="tf-phase-arrow" aria-hidden="true">→</span>
-		<button class="tf-phase-btn" data-phase="monitoring"><?php esc_html_e( '3 · Monitoring', 'testflow' ); ?></button>
-		<span class="tf-phase-arrow" aria-hidden="true">→</span>
-		<button class="tf-phase-btn" data-phase="closing"><?php esc_html_e( '4 · Closing', 'testflow' ); ?></button>
-	</div>
 
 	<div class="tf-body">
 

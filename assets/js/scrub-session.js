@@ -12,7 +12,6 @@
     nextId: 1,
     participantPool: [],
     ticketPool: [],
-    phase: 'opening',
     elapsedAtStart: 0,
     startTimestamp: null,
     timerRunning: false,
@@ -139,7 +138,6 @@
         startTimestamp: state.startTimestamp,
         timerRunning: state.timerRunning,
         chimePlayed: state.chimePlayed,
-        phase: state.phase,
         participants: state.participants,
         nextId: state.nextId,
         participantPool: state.participantPool,
@@ -157,7 +155,6 @@
     try {
       const data = JSON.parse(raw)
 
-      state.phase = data.phase || 'opening'
       state.chimePlayed = data.chimePlayed || false
       state.participants = (data.participants || []).map(p => ({
         id: p.id,
@@ -182,7 +179,6 @@
       qs('#tf-ticket-pool').value = state.ticketPool.join('\n')
 
       updateTimerDisplay()
-      setPhase(state.phase)
       renderParticipantSelects()
       renderTicketSelects()
       renderTable()
@@ -217,7 +213,6 @@
 
     localStorage.removeItem(STORAGE_KEY)
 
-    setPhase('opening')
     renderParticipantSelects()
     renderTicketSelects()
     renderTable()
@@ -296,14 +291,6 @@
     btn.textContent = 'Save'
   }
 
-  // ── Phase ────────────────────────────────────────────────────
-
-  function setPhase(phase) {
-    state.phase = phase
-    qsa('.tf-phase-btn').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.phase === phase)
-    })
-  }
 
   // ── Pools ────────────────────────────────────────────────────
 
@@ -607,12 +594,6 @@
       }
     })
 
-    qs('.tf-phases').addEventListener('click', e => {
-      if (e.target.classList.contains('tf-phase-btn')) {
-        setPhase(e.target.dataset.phase)
-        saveSessionState()
-      }
-    })
 
 
     const syncParticipants = value => {
