@@ -326,7 +326,7 @@
   function renderParticipantSelects() {
     const options = state.participantPool.map(name => `<option value="${name}">@${name}</option>`).join('')
 
-    ;['#tf-participant-select', '#tf-assign-username'].forEach(sel => {
+    ;['#tf-participant-select'].forEach(sel => {
       const el = qs(sel)
       if (!el) {
         return
@@ -347,12 +347,6 @@
       .map(url => `<option value="${url}">${ticketLabel(url)}</option>`)
       .join('')
 
-    const assignSelect = qs('#tf-assign-ticket')
-    if (assignSelect) {
-      const placeholder = assignSelect.querySelector('option[value=""]')
-      const label = placeholder ? placeholder.textContent : '—'
-      assignSelect.innerHTML = `<option value="">${label}</option>${options}`
-    }
 
     qsa('.tf-inline-ticket-select').forEach(el => {
       const current = el.value
@@ -560,22 +554,6 @@
     el.classList.toggle('tf-preview--muted', 0 === names.length)
   }
 
-  // ── Assignment preview ───────────────────────────────────────
-
-  function refreshAssignPreview() {
-    const u = qs('#tf-assign-username').value
-    const t = qs('#tf-assign-ticket').value
-    const preview = qs('#tf-assign-preview')
-
-    if (u && t) {
-      preview.textContent = T.firstAssign(u, t)
-      preview.classList.remove('tf-preview--muted')
-    } else {
-      preview.textContent = 'Select participant and ticket above'
-      preview.classList.add('tf-preview--muted')
-    }
-  }
-
   // ── DOM helpers ──────────────────────────────────────────────
 
   function qs(sel) {
@@ -668,57 +646,6 @@
       }
     })
 
-    qs('#tf-announcement').addEventListener('input', function () {
-      const preview = qs('#tf-announcement-preview')
-      if (this.value.trim()) {
-        preview.textContent = T.announcement(this.value.trim())
-        preview.classList.remove('tf-preview--muted')
-      } else {
-        preview.textContent = 'Enter announcement text to preview'
-        preview.classList.add('tf-preview--muted')
-      }
-    })
-
-    qs('#tf-copy-announcement').addEventListener('click', function () {
-      const val = qs('#tf-announcement').value.trim()
-      if (!val) {
-        toast('Enter announcement text first')
-        return
-      }
-      copyText(T.announcement(val), this)
-    })
-    ;['#tf-assign-username', '#tf-assign-ticket'].forEach(sel => {
-      qs(sel).addEventListener('change', refreshAssignPreview)
-    })
-
-    qs('#tf-copy-first-assign').addEventListener('click', function () {
-      const u = qs('#tf-assign-username').value
-      const t = qs('#tf-assign-ticket').value
-      if (!u || !t) {
-        toast('Select both participant and ticket')
-        return
-      }
-      copyText(T.firstAssign(u, t), this)
-    })
-
-    qs('#tf-copy-followup').addEventListener('click', function () {
-      const u = qs('#tf-assign-username').value
-      const t = qs('#tf-assign-ticket').value
-      if (!u || !t) {
-        toast('Select both participant and ticket')
-        return
-      }
-      copyText(T.followUp(u, t), this)
-    })
-
-    qs('#tf-copy-ack').addEventListener('click', function () {
-      const u = qs('#tf-assign-username').value
-      if (!u) {
-        toast('Select a participant')
-        return
-      }
-      copyText(T.ack(u), this)
-    })
 
     qs('#tf-copy-thanks').addEventListener('click', function () {
       if (0 === state.participants.length) {
@@ -732,7 +659,6 @@
 
     renderTable()
     refreshThanks()
-    refreshAssignPreview()
   }
 
   document.addEventListener('DOMContentLoaded', init)

@@ -86,48 +86,6 @@ $closing_messages = array(
 				</div>
 				<?php endforeach; ?>
 
-				<div class="tf-msg-row tf-msg-row--stacked">
-					<div class="tf-msg-label">
-						<?php esc_html_e( 'Announcement', 'testflow' ); ?>
-						<span class="tf-optional">(<?php esc_html_e( 'optional', 'testflow' ); ?>)</span>
-					</div>
-					<input
-						type="text"
-						id="tf-announcement"
-						class="tf-text-input"
-						placeholder="<?php esc_attr_e( 'e.g. WordPress 7.0 RC 2 is now available…', 'testflow' ); ?>"
-					>
-					<div id="tf-announcement-preview" class="tf-preview tf-preview--muted">
-						<?php esc_html_e( 'Enter announcement text to preview', 'testflow' ); ?>
-					</div>
-					<button id="tf-copy-announcement" class="tf-copy-btn tf-copy-btn--full">
-						<?php esc_html_e( 'Copy Announcement', 'testflow' ); ?>
-					</button>
-				</div>
-			</div>
-
-			<div class="tf-panel-section">
-				<div class="tf-section-label"><?php esc_html_e( 'Assign Ticket', 'testflow' ); ?></div>
-				<div class="tf-assign-inputs">
-					<select id="tf-assign-username" class="tf-text-input">
-						<option value=""><?php esc_html_e( '— participant —', 'testflow' ); ?></option>
-					</select>
-					<select id="tf-assign-ticket" class="tf-text-input">
-						<option value=""><?php esc_html_e( '— ticket / issue —', 'testflow' ); ?></option>
-					</select>
-				</div>
-				<div id="tf-assign-preview" class="tf-preview tf-preview--muted">
-					<?php esc_html_e( 'Select participant and ticket above', 'testflow' ); ?>
-				</div>
-				<div class="tf-assign-btns">
-					<div class="tf-assign-btns-row">
-						<button id="tf-copy-first-assign" class="tf-copy-btn"><?php esc_html_e( 'First Assignment', 'testflow' ); ?></button>
-						<button id="tf-copy-followup" class="tf-copy-btn"><?php esc_html_e( 'Follow-up', 'testflow' ); ?></button>
-					</div>
-					<button id="tf-copy-ack" class="tf-copy-btn tf-copy-btn--full">
-						<?php esc_html_e( 'Acknowledge Report', 'testflow' ); ?>
-					</button>
-				</div>
 			</div>
 
 			<div class="tf-panel-section">
