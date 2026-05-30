@@ -537,6 +537,61 @@
   color: #fff !important;
 }
 
+/* ── Clipboard bar ───────────────────────────────────── */
+
+.tf-clipboard-label {
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.tf-clipboard-bar {
+  background: #1d2327;
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tf-clipboard-text {
+  flex: 1;
+  font-family: monospace;
+  font-size: 13px;
+  color: #e2e4e7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tf-clipboard-text--empty {
+  color: #50575e;
+  font-style: italic;
+}
+
+.tf-clipboard-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #fff;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.tf-clipboard-copy-btn:hover {
+  opacity: 1;
+}
+
+.tf-clipboard-copy-btn .dashicons {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+
 /* ── Responsive ──────────────────────────────────────── */
 
 @media (max-width: 1100px) {
@@ -544,6 +599,7 @@
     grid-template-columns: 1fr;
   }
 }
+
 
 @media (max-width: 600px) {
   .tf-header {

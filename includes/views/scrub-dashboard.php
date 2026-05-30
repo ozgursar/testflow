@@ -165,6 +165,14 @@ $closing_messages = array(
 
 	</div>
 
+	<div class="tf-section-label tf-clipboard-label"><?php esc_html_e( 'Your Clipboard', 'testflow' ); ?></div>
+	<div id="tf-clipboard-bar" class="tf-clipboard-bar">
+		<span id="tf-clipboard-text" class="tf-clipboard-text tf-clipboard-text--empty"><?php esc_html_e( 'Nothing copied yet', 'testflow' ); ?></span>
+		<button id="tf-clipboard-copy-btn" class="tf-clipboard-copy-btn" title="<?php esc_attr_e( 'Copy again', 'testflow' ); ?>">
+			<span class="dashicons dashicons-clipboard" aria-hidden="true"></span>
+		</button>
+	</div>
+
 	<div class="tf-session-footer">
 		<button id="tf-reset-session-btn" class="button tf-btn-danger">
 			<?php esc_html_e( 'Reset Session', 'testflow' ); ?>

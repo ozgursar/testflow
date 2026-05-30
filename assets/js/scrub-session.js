@@ -359,9 +359,18 @@
 
   // ── Clipboard ────────────────────────────────────────────────
 
+  function updateClipboardBar(text) {
+    const el = qs('#tf-clipboard-text')
+    if (el) {
+      el.textContent = text
+      el.classList.remove('tf-clipboard-text--empty')
+    }
+  }
+
   function copyText(text, btn) {
     const onSuccess = () => {
       toast('Copied to clipboard')
+      updateClipboardBar(text)
       if (btn) {
         flashCopied(btn)
       }
@@ -653,6 +662,13 @@
         return
       }
       copyText(qs('#tf-thanks-preview').dataset.msg, this)
+    })
+
+    qs('#tf-clipboard-copy-btn').addEventListener('click', () => {
+      const el = qs('#tf-clipboard-text')
+      if (el && ! el.classList.contains('tf-clipboard-text--empty')) {
+        copyText(el.textContent)
+      }
     })
 
     qs('#tf-reset-session-btn').addEventListener('click', resetSession)
