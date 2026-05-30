@@ -500,20 +500,26 @@
         if (i > 0) {
           tdTickets.appendChild(document.createTextNode(', '))
         }
+
+        const item = cel('span')
+        item.className = 'tf-ticket-item'
+
         const a = cel('a')
         a.className = 'tf-ticket-link'
         a.href = url
         a.target = '_blank'
         a.rel = 'noopener noreferrer'
         a.textContent = ticketLabel(url)
-        tdTickets.appendChild(a)
+        item.appendChild(a)
 
         const removeBtn = cel('button')
         removeBtn.className = 'tf-ticket-remove-btn'
         removeBtn.title = 'Remove this ticket'
         removeBtn.textContent = '×'
         removeBtn.addEventListener('click', () => removeTicketFromParticipant(p.id, url))
-        tdTickets.appendChild(removeBtn)
+        item.appendChild(removeBtn)
+
+        tdTickets.appendChild(item)
       })
     } else {
       tdTickets.textContent = '—'
