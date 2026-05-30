@@ -50,13 +50,7 @@ $closing_messages = array(
 <div class="wrap tf-wrap">
 
 	<div class="tf-header">
-		<div class="tf-header-title">
-			<h1><?php esc_html_e( 'Patch Testing Scrub', 'testflow' ); ?></h1>
-			<div class="tf-session-type" role="group" aria-label="<?php esc_attr_e( 'Session type', 'testflow' ); ?>">
-				<button class="tf-session-type-btn is-active" data-type="core"><?php esc_html_e( 'Core', 'testflow' ); ?></button>
-				<button class="tf-session-type-btn" data-type="gutenberg"><?php esc_html_e( 'Gutenberg', 'testflow' ); ?></button>
-			</div>
-		</div>
+		<h1><?php esc_html_e( 'Patch Testing Scrub', 'testflow' ); ?></h1>
 		<div class="tf-timer-controls">
 			<button id="tf-timer-reset" class="button"><?php esc_html_e( 'Reset', 'testflow' ); ?></button>
 			<button id="tf-edit-limit-btn" class="button"><?php esc_html_e( 'Edit', 'testflow' ); ?></button>

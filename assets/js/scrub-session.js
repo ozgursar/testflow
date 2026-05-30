@@ -12,7 +12,6 @@
     nextId: 1,
     participantPool: [],
     ticketPool: [],
-    sessionType: 'core',
     phase: 'opening',
     elapsedAtStart: 0,
     startTimestamp: null,
@@ -141,7 +140,6 @@
         timerRunning: state.timerRunning,
         chimePlayed: state.chimePlayed,
         phase: state.phase,
-        sessionType: state.sessionType,
         participants: state.participants,
         nextId: state.nextId,
         participantPool: state.participantPool,
@@ -160,7 +158,6 @@
       const data = JSON.parse(raw)
 
       state.phase = data.phase || 'opening'
-      state.sessionType = data.sessionType || 'core'
       state.chimePlayed = data.chimePlayed || false
       state.participants = (data.participants || []).map(p => ({
         id: p.id,
@@ -186,7 +183,6 @@
 
       updateTimerDisplay()
       setPhase(state.phase)
-      setSessionType(state.sessionType)
       renderParticipantSelects()
       renderTicketSelects()
       renderTable()
@@ -212,7 +208,6 @@
     state.nextId = 1
     state.participantPool = []
     state.ticketPool = []
-    state.sessionType = 'core'
 
     qs('#tf-timer').textContent = '00:00'
     qs('#tf-timer').classList.remove('is-warning')
@@ -223,7 +218,6 @@
     localStorage.removeItem(STORAGE_KEY)
 
     setPhase('opening')
-    setSessionType('core')
     renderParticipantSelects()
     renderTicketSelects()
     renderTable()
@@ -300,15 +294,6 @@
     sel.addRange(range)
 
     btn.textContent = 'Save'
-  }
-
-  // ── Session type ─────────────────────────────────────────────
-
-  function setSessionType(type) {
-    state.sessionType = type
-    qsa('.tf-session-type-btn').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.type === type)
-    })
   }
 
   // ── Phase ────────────────────────────────────────────────────
@@ -642,12 +627,6 @@
       }
     })
 
-    qs('.tf-session-type').addEventListener('click', e => {
-      if (e.target.classList.contains('tf-session-type-btn')) {
-        setSessionType(e.target.dataset.type)
-        saveSessionState()
-      }
-    })
 
     const syncParticipants = value => {
       const newPool = parsePool(value)

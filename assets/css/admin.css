@@ -487,50 +487,6 @@
   transform: translateY(0);
 }
 
-/* ── Header title + session type toggle ──────────────── */
-
-.tf-header-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.tf-header-title h1 {
-  margin: 0;
-}
-
-.tf-session-type {
-  display: flex;
-  border: 1px solid #c3c4c7;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.tf-session-type-btn {
-  padding: 4px 12px;
-  font-size: 12px;
-  background: #f6f7f7;
-  border: none;
-  border-right: 1px solid #c3c4c7;
-  cursor: pointer;
-  color: #50575e;
-  transition:
-    background 0.15s,
-    color 0.15s;
-}
-
-.tf-session-type-btn:last-child {
-  border-right: none;
-}
-
-.tf-session-type-btn:hover {
-  background: #dcdcde;
-}
-
-.tf-session-type-btn.is-active {
-  background: var(--wp-admin-theme-color);
-  color: #fff;
-}
 
 /* ── Pool setup ──────────────────────────────────────── */
 
