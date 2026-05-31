@@ -47,7 +47,7 @@
       },
       {
         "label": "Facilitator & note-taker (same person)",
-        "text": "Today's session facilitator and note-taker is @{facilitator}"
+        "text": "Today's session facilitator and note-taker is {facilitator}"
       },
       {
         "label": "Facilitator & note-taker (different people)",
