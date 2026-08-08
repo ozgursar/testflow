@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sessions = array(
+$testflow_sessions = array(
 	array(
 		'title'       => __( 'Patch Testing Scrub', 'testflow' ),
 		'description' => __( 'A 1-hour weekly session where a moderator assigns Trac tickets to contributors for patch testing. Covers opening, ticket assignment, monitoring reports, and closing.', 'testflow' ),
@@ -31,12 +31,12 @@ $sessions = array(
 	</p>
 
 	<div class="tf-session-cards">
-		<?php foreach ( $sessions as $session ) : ?>
+		<?php foreach ( $testflow_sessions as $testflow_session ) : ?>
 		<div class="tf-session-card">
-			<h2><?php echo esc_html( $session['title'] ); ?></h2>
-			<p><?php echo esc_html( $session['description'] ); ?></p>
-			<a href="<?php echo esc_url( $session['url'] ); ?>" class="button button-primary">
-				<?php echo esc_html( $session['label'] ); ?>
+			<h2><?php echo esc_html( $testflow_session['title'] ); ?></h2>
+			<p><?php echo esc_html( $testflow_session['description'] ); ?></p>
+			<a href="<?php echo esc_url( $testflow_session['url'] ); ?>" class="button button-primary">
+				<?php echo esc_html( $testflow_session['label'] ); ?>
 			</a>
 		</div>
 		<?php endforeach; ?>

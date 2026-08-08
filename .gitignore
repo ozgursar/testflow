@@ -36,5 +36,9 @@ vendor/
 *.min.js
 *.min.css
 
+# Local build/deploy tooling
+/bin/
+/package.json
+
 # Logs
 *.log

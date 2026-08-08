@@ -3,10 +3,11 @@
  * Plugin Name:       TestFlow
  * Plugin URI:        https://make.wordpress.org/test/
  * Description:       Session facilitator for WordPress Test Team members.
- * Version:           0.5.2
+ * Version:           1.0.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
- * Author:            WordPress Test Team
+ * Author:            Ozgur Sar
+ * Author URI:        https://profiles.wordpress.org/ozgursar/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       testflow

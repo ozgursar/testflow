@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sections = array(
+$testflow_sections = array(
 	'opening'           => __( '1. Opening', 'testflow' ),
 	'assigning_tickets' => __( '2. Assigning Tickets', 'testflow' ),
 	'monitoring'        => __( '3. Monitoring the Session', 'testflow' ),
@@ -31,55 +31,55 @@ $sections = array(
 
 		<aside class="tf-messages-panel">
 
-			<?php foreach ( $sections as $section_key => $section_label ) : ?>
-				<?php $items = TestFlow_Messages::get_section( $section_key ); ?>
-				<?php if ( ! empty( $items ) ) : ?>
+			<?php foreach ( $testflow_sections as $testflow_section_key => $testflow_section_label ) : ?>
+				<?php $testflow_items = TestFlow_Messages::get_section( $testflow_section_key ); ?>
+				<?php if ( ! empty( $testflow_items ) ) : ?>
 
 				<div class="tf-panel-section">
 					<div class="tf-section-label">
-						<?php echo esc_html( $section_label ); ?>
-						<?php $duration = TestFlow_Messages::get_duration( $section_key ); ?>
-						<?php if ( $duration ) : ?>
+						<?php echo esc_html( $testflow_section_label ); ?>
+						<?php $testflow_duration = TestFlow_Messages::get_duration( $testflow_section_key ); ?>
+						<?php if ( $testflow_duration ) : ?>
 						<span class="tf-duration-tag">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-							<?php echo esc_html( $duration ); ?>
+							<?php echo esc_html( $testflow_duration ); ?>
 						</span>
 						<?php endif; ?>
 					</div>
 
-					<?php $in_list = false; ?>
-					<?php foreach ( $items as $item ) : ?>
+					<?php $testflow_in_list = false; ?>
+					<?php foreach ( $testflow_items as $testflow_item ) : ?>
 						<?php
-						$text             = isset( $item['text'] ) ? $item['text'] : '';
-						$label            = isset( $item['label'] ) ? $item['label'] : '';
-						$is_note          = ! empty( $item['note'] );
-						$is_bullet        = ! empty( $item['bullet'] );
-						$has_announcement = false !== strpos( $text, '{announcement}' );
-						$has_participants = false !== strpos( $text, '{participants}' );
+						$testflow_text             = isset( $testflow_item['text'] ) ? $testflow_item['text'] : '';
+						$testflow_label            = isset( $testflow_item['label'] ) ? $testflow_item['label'] : '';
+						$testflow_is_note          = ! empty( $testflow_item['note'] );
+						$testflow_is_bullet        = ! empty( $testflow_item['bullet'] );
+						$testflow_has_announcement = false !== strpos( $testflow_text, '{announcement}' );
+						$testflow_has_participants = false !== strpos( $testflow_text, '{participants}' );
 
-						if ( ! $is_bullet && $in_list ) {
+						if ( ! $testflow_is_bullet && $testflow_in_list ) {
 							echo '</ul>';
-							$in_list = false;
+							$testflow_in_list = false;
 						}
 						?>
 
-						<?php if ( $is_note ) : ?>
+						<?php if ( $testflow_is_note ) : ?>
 
-						<p class="tf-section-note"><?php echo esc_html( $text ); ?></p>
+						<p class="tf-section-note"><?php echo esc_html( $testflow_text ); ?></p>
 
-						<?php elseif ( $is_bullet ) : ?>
-							<?php if ( ! $in_list ) : ?>
+						<?php elseif ( $testflow_is_bullet ) : ?>
+							<?php if ( ! $testflow_in_list ) : ?>
 						<ul class="tf-section-bullets">
-								<?php $in_list = true; ?>
+								<?php $testflow_in_list = true; ?>
 						<?php endif; ?>
-						<li><?php echo esc_html( $text ); ?></li>
+						<li><?php echo esc_html( $testflow_text ); ?></li>
 
-						<?php elseif ( $has_announcement ) : ?>
+						<?php elseif ( $testflow_has_announcement ) : ?>
 
 						<div class="tf-msg-row tf-msg-row--input">
 							<div class="tf-msg-content">
 								<div class="tf-msg-label">
-									<?php echo esc_html( $label ); ?>
+									<?php echo esc_html( $testflow_label ); ?>
 									<span class="tf-optional">(<?php esc_html_e( 'optional', 'testflow' ); ?>)</span>
 								</div>
 								<input
@@ -97,11 +97,11 @@ $sections = array(
 							</button>
 						</div>
 
-						<?php elseif ( $has_participants ) : ?>
+						<?php elseif ( $testflow_has_participants ) : ?>
 
 						<div class="tf-msg-row">
 							<div class="tf-msg-content">
-								<div class="tf-msg-label"><?php echo esc_html( $label ); ?></div>
+								<div class="tf-msg-label"><?php echo esc_html( $testflow_label ); ?></div>
 								<div id="tf-thanks-preview" class="tf-msg-text tf-preview--muted">
 									<?php esc_html_e( 'Add participants to generate this message', 'testflow' ); ?>
 								</div>
@@ -115,17 +115,17 @@ $sections = array(
 
 						<div class="tf-msg-row">
 							<div class="tf-msg-content">
-								<div class="tf-msg-label"><?php echo esc_html( $label ); ?></div>
+								<div class="tf-msg-label"><?php echo esc_html( $testflow_label ); ?></div>
 								<div class="tf-msg-text">
 								<?php
-									$display = esc_html( $text );
-									$display = preg_replace( '/(`[^`]+`)/', '<code class="tf-inline-code">$1</code>', $display );
-									$display = preg_replace( '/(&lt;\/?[a-z][a-z0-9-]*&gt;)/i', '<code class="tf-inline-code">$1</code>', $display );
-									echo wp_kses( $display, array( 'code' => array( 'class' => array() ) ) );
+									$testflow_display = esc_html( $testflow_text );
+									$testflow_display = preg_replace( '/(`[^`]+`)/', '<code class="tf-inline-code">$1</code>', $testflow_display );
+									$testflow_display = preg_replace( '/(&lt;\/?[a-z][a-z0-9-]*&gt;)/i', '<code class="tf-inline-code">$1</code>', $testflow_display );
+									echo wp_kses( $testflow_display, array( 'code' => array( 'class' => array() ) ) );
 								?>
 								</div>
 							</div>
-							<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $text ); ?>">
+							<button class="tf-copy-btn" data-msg="<?php echo esc_attr( $testflow_text ); ?>">
 								<?php esc_html_e( 'Copy', 'testflow' ); ?>
 							</button>
 						</div>
@@ -133,7 +133,7 @@ $sections = array(
 						<?php endif; ?>
 					<?php endforeach; ?>
 					<?php
-					if ( $in_list ) :
+					if ( $testflow_in_list ) :
 						?>
 						</ul><?php endif; ?>
 
