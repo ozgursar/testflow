@@ -40,5 +40,10 @@ vendor/
 /bin/
 /package.json
 
+# Local agent tooling
+/.claude/
+/.agents/
+/skills-lock.json
+
 # Logs
 *.log
