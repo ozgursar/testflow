@@ -24,6 +24,11 @@ TestFlow helps WordPress Test Team moderators facilitate weekly test chat and pa
 
 ## Changelog
 
+### 1.0.2
+
+- Trac tickets read as #ID in chat - props @huzaifaalmesbah
+- Added WordPress Playground blueprint for Live Preview.
+
 ### 1.0.1
 
 - Added TestFlow link to the admin bar.

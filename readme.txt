@@ -4,7 +4,7 @@ Tags: testing, test team, session, moderator, patch testing
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,10 @@ WordPress Test Team moderators who run Patch Testing Scrub and Test Chat session
 3. Overview
 
 == Changelog ==
+
+= 1.0.2 =
+* Trac tickets read as #ID in chat - props @huzaifaalmesbah
+* Added WordPress Playground blueprint for Live Preview.
 
 = 1.0.1 =
 * Added TestFlow link to the admin bar.
