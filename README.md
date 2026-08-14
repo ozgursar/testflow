@@ -4,12 +4,12 @@ Session facilitator for WordPress Test Team members.
 
 ## Overview
 
-TestFlow is an internal WordPress plugin that assists moderators in running weekly Test Team sessions. It provides message templates with one-click copy, a participant tracker, and a session timer — reducing copy-paste overhead and keeping the session on track.
+TestFlow helps WordPress Test Team moderators facilitate weekly test chat and patch testing scrub sessions.
 
 ## Supported session types
 
-- **Patch Testing Scrub** — weekly 1-hour session where the moderator assigns Trac tickets to contributors for patch testing
-- **Test Chat** — bi-weekly 1-hour team chat covering agenda discussions, ecosystem announcements, and a call for testing _(coming soon)_
+- **Patch Testing Scrub** — weekly 1-hour session where the moderator assigns tickets to contributors for patch testing
+- **Test Chat** — weekly 1-hour team chat covering agenda discussions, ecosystem announcements, and open floor
 
 ## Requirements
 
@@ -21,3 +21,13 @@ TestFlow is an internal WordPress plugin that assists moderators in running week
 1. Clone or copy the plugin into `wp-content/plugins/testflow/`
 2. Activate the plugin from the WordPress admin **Plugins** screen
 3. Navigate to **TestFlow** in the admin sidebar
+
+## Changelog
+
+### 1.0.1
+
+- Added TestFlow link to the admin bar.
+
+### 1.0.0
+
+- Initial release.

@@ -23,6 +23,9 @@ class TestFlow_Admin {
 		$instance = new self();
 		add_action( 'admin_menu', array( $instance, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $instance, 'enqueue_assets' ) );
+		add_action( 'admin_bar_menu', array( $instance, 'register_admin_bar_menu' ), 100 );
+		add_action( 'admin_enqueue_scripts', array( $instance, 'enqueue_admin_bar_style' ) );
+		add_action( 'wp_enqueue_scripts', array( $instance, 'enqueue_admin_bar_style' ) );
 	}
 
 	/**
@@ -124,6 +127,36 @@ class TestFlow_Admin {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Adds the TestFlow node to the admin bar.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar Core admin bar instance.
+	 */
+	public function register_admin_bar_menu( $wp_admin_bar ) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node(
+			array(
+				'id'    => self::SLUG_BASE,
+				'title' => '<span class="ab-icon"></span>' . __( 'TestFlow', 'testflow' ),
+				'href'  => admin_url( 'admin.php?page=' . self::SLUG_BASE ),
+			)
+		);
+	}
+
+	/**
+	 * Adds the inline CSS that sets the TestFlow admin bar icon glyph.
+	 */
+	public function enqueue_admin_bar_style() {
+		if ( ! is_admin_bar_showing() || ! current_user_can( 'edit_posts' ) ) {
+			return;
+		}
+
+		wp_add_inline_style( 'admin-bar', '#wp-admin-bar-' . self::SLUG_BASE . ' .ab-icon:before { content: "\f217"; top: 2px; }' );
 	}
 
 	/**

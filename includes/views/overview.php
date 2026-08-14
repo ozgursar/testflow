@@ -10,13 +10,13 @@ defined( 'ABSPATH' ) || exit;
 $testflow_sessions = array(
 	array(
 		'title'       => __( 'Patch Testing Scrub', 'testflow' ),
-		'description' => __( 'A 1-hour weekly session where a moderator assigns Trac tickets to contributors for patch testing. Covers opening, ticket assignment, monitoring reports, and closing.', 'testflow' ),
+		'description' => __( 'A 1-hour weekly session where a moderator assigns tickets to contributors for patch testing. Covers opening, ticket assignment, monitoring reports, and closing.', 'testflow' ),
 		'url'         => admin_url( 'admin.php?page=testflow-scrub' ),
 		'label'       => __( 'Start Scrub Session', 'testflow' ),
 	),
 	array(
 		'title'       => __( 'Test Chat', 'testflow' ),
-		'description' => __( 'A 1-hour bi-weekly team chat covering agenda discussions, WordPress ecosystem announcements, test team updates, and a call for testing.', 'testflow' ),
+		'description' => __( 'A 1-hour weekly team chat covering agenda discussions, WordPress ecosystem announcements, test team updates, and open floor.', 'testflow' ),
 		'url'         => admin_url( 'admin.php?page=testflow-test-chat' ),
 		'label'       => __( 'Start Test Chat', 'testflow' ),
 	),
