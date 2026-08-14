@@ -322,6 +322,21 @@
     }
   }
 
+  // Trac tickets read as #ID in chat; everything else (e.g. GitHub PRs) keeps the full link.
+  function ticketRef(url) {
+    try {
+      const u = new URL(url)
+      if (/trac\.wordpress\.org$/.test(u.hostname)) {
+        const parts = u.pathname.split('/').filter(Boolean)
+        const id = parts[parts.length - 1]
+        if (id && /^\d+$/.test(id)) {
+          return '#' + id
+        }
+      }
+    } catch (e) {}
+    return url
+  }
+
   function renderParticipantSelects() {
     const options = state.participantPool.map(name => `<option value="${name}">@${name}</option>`).join('')
 
@@ -438,7 +453,7 @@
     p.tickets.push(url)
 
     const tmplKey = 1 === p.tickets.length ? 'first_assign' : 'followup'
-    const msg = applyTemplate( getMsgByKey( 'assignment', tmplKey ), { username: p.username, url } )
+    const msg = applyTemplate( getMsgByKey( 'assignment', tmplKey ), { username: p.username, url: ticketRef( url ) } )
     copyText(msg)
     renderTable()
     saveSessionState()
