@@ -2,9 +2,9 @@
 Contributors: ozgursar
 Tags: testing, test team, session, moderator, patch testing
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,10 @@ WordPress Test Team moderators who run Patch Testing Scrub and Test Chat session
 3. Overview
 
 == Changelog ==
+
+= 1.0.3 =
+* Split the ticket pool into Beginner, Intermediate and Expert - props @softglazee
+* Fix: Enable Assign when tickets are added after participants - props @softglazee
 
 = 1.0.2 =
 * Trac tickets read as #ID in chat - props @huzaifaalmesbah

@@ -24,6 +24,11 @@ TestFlow helps WordPress Test Team moderators facilitate weekly test chat and pa
 
 ## Changelog
 
+### 1.0.3
+
+- Split the ticket pool into Beginner, Intermediate and Expert - props @softglazee
+- Fix: Enable Assign when tickets are added after participants - props @softglazee
+
 ### 1.0.2
 
 - Trac tickets read as #ID in chat - props @huzaifaalmesbah
