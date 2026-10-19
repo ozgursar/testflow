@@ -417,7 +417,13 @@
 
   function renderTicketSelects() {
     const groups = getAvailableTickets()
-    qsa('.tf-inline-ticket-select').forEach(el => fillTicketSelect(el, groups))
+    qsa('.tf-inline-ticket-select').forEach(el => {
+      fillTicketSelect(el, groups)
+      const btn = el.parentNode.querySelector('.button')
+      if (btn) {
+        btn.disabled = 0 === groups.length
+      }
+    })
   }
 
 
