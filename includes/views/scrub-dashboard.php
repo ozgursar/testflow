@@ -13,6 +13,12 @@ $testflow_sections = array(
 	'monitoring'        => __( '3. Monitoring the Session', 'testflow' ),
 	'closing'           => __( '4. Closing', 'testflow' ),
 );
+
+$testflow_ticket_levels = array(
+	'beginner'     => __( 'Beginner', 'testflow' ),
+	'intermediate' => __( 'Intermediate', 'testflow' ),
+	'expert'       => __( 'Expert', 'testflow' ),
+);
 ?>
 
 <div class="wrap tf-wrap">
@@ -160,17 +166,27 @@ $testflow_sections = array(
 						placeholder="<?php esc_attr_e( "username1\nusername2\nusername3", 'testflow' ); ?>"
 					></textarea>
 				</div>
-				<div class="tf-pool-col">
-					<label class="tf-pool-label" for="tf-ticket-pool">
+				<div class="tf-pool-col" role="group" aria-labelledby="tf-ticket-pool-label">
+					<span id="tf-ticket-pool-label" class="tf-pool-label">
 						<?php esc_html_e( 'Tickets / Issues (one URL per line)', 'testflow' ); ?>
-					</label>
-					<textarea
-						id="tf-ticket-pool"
-						class="tf-pool-textarea"
-						rows="8"
-						wrap="off"
-						placeholder="<?php esc_attr_e( "https://core.trac.wordpress.org/ticket/65403\nhttps://github.com/WordPress/gutenberg/issues/12345", 'testflow' ); ?>"
-					></textarea>
+					</span>
+					<div class="tf-ticket-levels">
+						<?php foreach ( $testflow_ticket_levels as $testflow_level_key => $testflow_level_label ) : ?>
+						<div class="tf-ticket-level">
+							<label class="tf-ticket-level-label" for="tf-ticket-pool-<?php echo esc_attr( $testflow_level_key ); ?>">
+								<?php echo esc_html( $testflow_level_label ); ?>
+							</label>
+							<textarea
+								id="tf-ticket-pool-<?php echo esc_attr( $testflow_level_key ); ?>"
+								class="tf-pool-textarea tf-ticket-pool"
+								data-level="<?php echo esc_attr( $testflow_level_key ); ?>"
+								rows="3"
+								wrap="off"
+								placeholder="<?php esc_attr_e( "https://core.trac.wordpress.org/ticket/65403\nhttps://github.com/WordPress/gutenberg/issues/12345", 'testflow' ); ?>"
+							></textarea>
+						</div>
+						<?php endforeach; ?>
+					</div>
 				</div>
 			</div>
 

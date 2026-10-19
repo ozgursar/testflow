@@ -527,6 +527,20 @@
   margin-bottom: 4px;
 }
 
+.tf-ticket-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tf-ticket-level-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1d2327;
+  margin-bottom: 2px;
+}
+
 .tf-pool-textarea {
   width: 100%;
   font-size: 12px;
