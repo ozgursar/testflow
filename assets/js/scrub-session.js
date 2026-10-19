@@ -11,7 +11,7 @@
     participants: [],
     nextId: 1,
     participantPool: [],
-    ticketPool: [],
+    ticketPools: {},
     elapsedAtStart: 0,
     startTimestamp: null,
     timerRunning: false,
@@ -153,7 +153,7 @@
         participants: state.participants,
         nextId: state.nextId,
         participantPool: state.participantPool,
-        ticketPool: state.ticketPool
+        ticketPools: state.ticketPools
       })
     )
   }
@@ -175,7 +175,15 @@
       }))
       state.nextId = data.nextId || 1
       state.participantPool = data.participantPool || []
-      state.ticketPool = data.ticketPool || []
+      state.ticketPools = data.ticketPools || {}
+
+      // Sessions saved before difficulty levels had one ticket list. Keep those tickets in the first box.
+      if (!data.ticketPools && data.ticketPool && data.ticketPool.length) {
+        const firstLevel = getTicketLevels()[0]
+        if (firstLevel) {
+          state.ticketPools[firstLevel.key] = data.ticketPool
+        }
+      }
 
       if (data.timerRunning && data.startTimestamp) {
         state.elapsedAtStart = data.elapsedAtStart || 0
@@ -188,7 +196,9 @@
       }
 
       qs('#tf-participant-pool').value = state.participantPool.join('\n')
-      qs('#tf-ticket-pool').value = state.ticketPool.join('\n')
+      qsa('.tf-ticket-pool').forEach(el => {
+        el.value = (state.ticketPools[el.dataset.level] || []).join('\n')
+      })
 
       updateTimerDisplay()
       renderParticipantSelects()
@@ -215,13 +225,15 @@
     state.participants = []
     state.nextId = 1
     state.participantPool = []
-    state.ticketPool = []
+    state.ticketPools = {}
 
     qs('#tf-timer').textContent = '00:00'
     qs('#tf-timer').classList.remove('is-warning')
     qs('#tf-timer-btn').textContent = '▶ Start'
     qs('#tf-participant-pool').value = ''
-    qs('#tf-ticket-pool').value = ''
+    qsa('.tf-ticket-pool').forEach(el => {
+      el.value = ''
+    })
 
     localStorage.removeItem(STORAGE_KEY)
 
@@ -352,24 +364,60 @@
 
   }
 
+  // The levels come from the ticket textareas in the view, so their order and labels stay translatable.
+  function getTicketLevels() {
+    return Array.from(qsa('.tf-ticket-pool')).map(el => {
+      const label = qs(`label[for="${el.id}"]`)
+      return { key: el.dataset.level, label: label ? label.textContent.trim() : el.dataset.level }
+    })
+  }
+
+  // Unassigned tickets grouped by level. A ticket listed twice is offered once, under its first level.
   function getAvailableTickets() {
-    const usedTickets = new Set(state.participants.flatMap(p => p.tickets))
-    return state.ticketPool.filter(url => !usedTickets.has(url))
+    const seen = new Set(state.participants.flatMap(p => p.tickets))
+    return getTicketLevels()
+      .map(level => ({
+        label: level.label,
+        urls: (state.ticketPools[level.key] || []).filter(url => {
+          if (seen.has(url)) {
+            return false
+          }
+          seen.add(url)
+          return true
+        })
+      }))
+      .filter(group => group.urls.length > 0)
+  }
+
+  function fillTicketSelect(select, groups) {
+    const current = select.value
+    select.innerHTML = ''
+
+    const emptyOpt = cel('option')
+    emptyOpt.value = ''
+    emptyOpt.textContent = 'Select a Ticket'
+    select.appendChild(emptyOpt)
+
+    groups.forEach(group => {
+      const optgroup = cel('optgroup')
+      optgroup.label = group.label
+      group.urls.forEach(url => {
+        const opt = cel('option')
+        opt.value = url
+        opt.textContent = ticketLabel(url)
+        optgroup.appendChild(opt)
+      })
+      select.appendChild(optgroup)
+    })
+
+    if (current) {
+      select.value = current
+    }
   }
 
   function renderTicketSelects() {
-    const availableOptions = getAvailableTickets()
-      .map(url => `<option value="${url}">${ticketLabel(url)}</option>`)
-      .join('')
-
-    qsa('.tf-inline-ticket-select').forEach(el => {
-      const current = el.value
-      el.innerHTML = `<option value="">Select a Ticket </option>${availableOptions}`
-      if (current) {
-        el.value = current
-      }
-    })
-
+    const groups = getAvailableTickets()
+    qsa('.tf-inline-ticket-select').forEach(el => fillTicketSelect(el, groups))
   }
 
 
@@ -541,17 +589,7 @@
     const available = getAvailableTickets()
     const select = cel('select')
     select.className = 'tf-inline-ticket-select'
-    const emptyOpt = cel('option')
-    emptyOpt.value = ''
-    emptyOpt.textContent = '— ticket / issue —'
-    select.appendChild(emptyOpt)
-
-    available.forEach(url => {
-      const opt = cel('option')
-      opt.value = url
-      opt.textContent = ticketLabel(url)
-      select.appendChild(opt)
-    })
+    fillTicketSelect(select, available)
 
     const btn = cel('button')
     btn.className = 'button button-small button-primary'
@@ -650,10 +688,12 @@
       }
     })
 
-    qs('#tf-ticket-pool').addEventListener('input', function () {
-      state.ticketPool = parsePool(this.value)
-      renderTicketSelects()
-      saveSessionState()
+    qsa('.tf-ticket-pool').forEach(el => {
+      el.addEventListener('input', function () {
+        state.ticketPools[this.dataset.level] = parsePool(this.value)
+        renderTicketSelects()
+        saveSessionState()
+      })
     })
 
     document.addEventListener('click', e => {
